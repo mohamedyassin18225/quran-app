@@ -9,14 +9,26 @@ if (file_exists($maintenance = __DIR__ . '/../storage/framework/maintenance.php'
     require $maintenance;
 }
 
+// Check vendor
+if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    die("Vendor autoload missing! Composer did not run.");
+}
+
 // Register the Composer autoloader...
 require __DIR__ . '/../vendor/autoload.php';
 
-// Bootstrap Laravel and handle the request...
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+try {
+    // Bootstrap Laravel and handle the request...
+    $app = require_once __DIR__ . '/../bootstrap/app.php';
 
-// === VERCEL FIX: Use /tmp for storage because Vercel is Read-Only ===
-$app->useStoragePath('/tmp');
-// ====================================================================
+    // === VERCEL FIX: Use /tmp for storage because Vercel is Read-Only ===
+    $app->useStoragePath('/tmp');
+    // ====================================================================
 
-$app->handleRequest(Request::capture());
+    $app->handleRequest(Request::capture());
+} catch (\Throwable $e) {
+    http_response_code(500);
+    echo "<h1>Error 500 Debug</h1>";
+    echo "<h2>" . $e->getMessage() . "</h2>";
+    echo "<pre>" . $e->getTraceAsString() . "</pre>";
+}
