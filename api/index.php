@@ -33,6 +33,9 @@ try {
 
     // Clear config cache to prevent stale paths from breaking "View"
     $app->make('Illuminate\Contracts\Console\Kernel')->call('config:clear');
+
+    // Override View Compiled Path to /tmp
+    $app['config']->set('view.compiled', '/tmp/views');
     // ====================================================================
 
     $app->handleRequest(Request::capture());
