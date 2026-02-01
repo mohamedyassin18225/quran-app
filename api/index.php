@@ -23,6 +23,9 @@ try {
 
     // === VERCEL FIX: Use /tmp for storage because Vercel is Read-Only ===
     $app->useStoragePath('/tmp');
+
+    // Clear config cache to prevent stale paths from breaking "View"
+    $app->make('Illuminate\Contracts\Console\Kernel')->call('config:clear');
     // ====================================================================
 
     $app->handleRequest(Request::capture());
