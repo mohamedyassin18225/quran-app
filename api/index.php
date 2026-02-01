@@ -1,3 +1,6 @@
 <?php
-// Forward Vercel requests to Laravel's public/index.php
-require __DIR__ . '/../public/index.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+echo "Hello from Vercel PHP! (Debug Mode)";
+// require __DIR__ . '/../public/index.php';
