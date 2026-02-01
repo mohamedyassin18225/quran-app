@@ -8,23 +8,22 @@
         }
     ],
     "routes": [
-        "routes": [
-            {
-                "src": "/icon.png",
-                "dest": "/icon.png"
-            },
-            {
-                "src": "/manifest.json",
-                "dest": "/manifest.json"
-            },
-            {
-                "src": "/(?!icon.png|manifest.json).*",
-                "dest": "/api/index.php"
-            }
-        ],
-        "env": {
-            "APP_ENV": "production",
-            "APP_DEBUG": "true",
-            "APP_URL": "https://quran-app-plum-kappa.vercel.app"
+        {
+            "src": "/icon.png",
+            "dest": "/icon.png"
+        },
+        {
+            "src": "/manifest.json",
+            "dest": "/manifest.json"
+        },
+        {
+            "src": "/(?!icon.png|manifest.json).*",
+            "dest": "/api/index.php"
         }
+    ],
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "true",
+        "APP_URL": "https://quran-app-plum-kappa.vercel.app"
     }
+}
