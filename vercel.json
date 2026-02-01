@@ -5,6 +5,22 @@
         {
             "src": "api/index.php",
             "use": "vercel-php@0.7.1"
+        },
+        {
+            "src": "icon.png",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "manifest.json",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "build/**/*.css",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "build/**/*.js",
+            "use": "@vercel/static"
         }
     ],
     "routes": [
@@ -17,7 +33,11 @@
             "dest": "/manifest.json"
         },
         {
-            "src": "/(?!icon.png|manifest.json).*",
+            "src": "/build/(.*)",
+            "dest": "/build/$1"
+        },
+        {
+            "src": "/(.*)",
             "dest": "/api/index.php"
         }
     ],
