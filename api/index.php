@@ -36,6 +36,13 @@ try {
 
     // Override View Compiled Path to /tmp
     $app['config']->set('view.compiled', '/tmp/views');
+
+    // === FORCE DISABLE DATABASE ===
+    // Use 'cookie' for sessions (no file/db needed)
+    $app['config']->set('session.driver', 'cookie');
+    // Use 'array' for cache (ram only) to avoid file permission issues
+    $app['config']->set('cache.default', 'array');
+    // ===================================
     // ====================================================================
 
     $app->handleRequest(Request::capture());
