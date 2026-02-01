@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e293b">
     <style>
         :root {
             --primary: #1e293b;
