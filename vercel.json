@@ -18,7 +18,6 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "true",
-        "APP_URL": "https://your-app.vercel.app",
-        "APP_KEY": "base64:sS6v+G9+example+key+REPLACE_THIS_IN_VERCEL_DASHBOARD="
+        "APP_URL": "https://quran-app-plum-kappa.vercel.app"
     }
 }
