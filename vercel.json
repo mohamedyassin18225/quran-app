@@ -9,6 +9,14 @@
     ],
     "routes": [
         {
+            "src": "/icon.png",
+            "dest": "/public/icon.png"
+        },
+        {
+            "src": "/manifest.json",
+            "dest": "/public/manifest.json"
+        },
+        {
             "handle": "filesystem"
         },
         {
