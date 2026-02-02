@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qibla Finder | Prayer App</title>
+    <title>تحديد القبلة | تطبيق الصلاة</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1e293b">
@@ -26,7 +26,7 @@
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Cairo', sans-serif;
             background-color: var(--primary);
             color: var(--text-light);
             margin: 0;
@@ -37,6 +37,7 @@
             justify-content: center;
             min-height: 100vh;
             overflow: hidden;
+            text-align: center;
         }
 
         .header {
@@ -47,8 +48,9 @@
         }
 
         .header h1 {
-            font-weight: 300;
+            font-weight: 700;
             margin: 0;
+            font-size: 2rem;
         }
 
         .compass-container {
@@ -80,12 +82,14 @@
 
         .compass-arrow::after {
             content: 'N';
+            /* Keep N for North universally? Or uses 'ش' for Shamal? Lets use N for standard compass feel or maybe 'ش' */
+            content: 'ش';
             position: absolute;
             top: 110px;
-            left: -6px;
+            left: -8px;
             color: var(--text-light);
             font-weight: bold;
-            font-size: 14px;
+            font-size: 16px;
         }
 
         .qibla-pointer {
@@ -115,6 +119,7 @@
             color: var(--text-dim);
             text-align: center;
             max-width: 300px;
+            font-weight: 600;
         }
 
         .btn-start {
@@ -123,7 +128,8 @@
             border: none;
             padding: 12px 30px;
             border-radius: 30px;
-            font-weight: 600;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
             cursor: pointer;
             margin-top: 20px;
             display: none;
@@ -132,14 +138,18 @@
 
         .degree-display {
             font-size: 2rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-top: 20px;
+            direction: ltr;
+            /* Degrees are numbers */
         }
 
         .back-link {
             position: absolute;
             top: 20px;
-            left: 20px;
+            right: 20px;
+            /* Right for RTL */
+            left: auto;
             color: var(--text-light);
             text-decoration: none;
             font-size: 1.5rem;
@@ -151,10 +161,10 @@
 
 <body>
 
-    <a href="/" class="back-link">&larr;</a>
+    <a href="/" class="back-link">&rarr;</a>
 
     <div class="header">
-        <h1>Qibla Finder</h1>
+        <h1>اتجاه القبلة</h1>
     </div>
 
     <div class="compass-container" id="compass">
@@ -163,9 +173,9 @@
     </div>
 
     <div class="degree-display" id="degree">--°</div>
-    <div class="status-text" id="status">Waiting for location access...</div>
+    <div class="status-text" id="status">جارِ تحديد الموقع...</div>
 
-    <button class="btn-start" id="startBtn" onclick="requestPermission()">Enable Compass</button>
+    <button class="btn-start" id="startBtn" onclick="requestPermission()">تفعيل البوصلة</button>
 
     <script>
         const compass = document.getElementById('compass');
@@ -187,23 +197,23 @@
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
                         calculateQibla(lat, lng);
-                        status.innerText = "Location Found. Point your phone flat.";
+                        status.innerText = "تم تحديد الموقع. ضع هاتفك بشكل مسطح.";
 
                         // Check if iOS 13+ permission is needed
                         if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
                             startBtn.style.display = 'block';
-                            status.innerText = "Tap 'Enable Compass' to start.";
+                            status.innerText = "اضغط على 'تفعيل البوصلة' للبدء.";
                         } else {
                             // Non-iOS or older devices usually just work
                             startCompass();
                         }
                     },
                     (error) => {
-                        status.innerText = "Error: Could not get location. Enable GPS.";
+                        status.innerText = "خطأ: تعذر تحديد الموقع. تأكد من تفعيل GPS.";
                     }
                 );
             } else {
-                status.innerText = "Geolocation is not supported by this browser.";
+                status.innerText = "المتصفح لا يدعم تحديد الموقع.";
             }
         }
 
@@ -222,9 +232,6 @@
             if (qiblaAngle < 0) qiblaAngle += 360;
 
             qiblaPointer.style.display = 'block';
-            // We set the pointer rotation RELATIVE to North (which is 0 in the CSS container)
-            // But wait, we rotate the CONTAINER based on device alpha.
-            // So inside the container, the Qibla pointer should just be fixed at the Qibla angle relative to North.
             qiblaPointer.style.transform = `rotate(${qiblaAngle}deg)`;
         }
 
@@ -235,7 +242,7 @@
                         startBtn.style.display = 'none';
                         startCompass();
                     } else {
-                        status.innerText = "Permission denied.";
+                        status.innerText = "تم رفض الإذن.";
                     }
                 })
                 .catch(console.error);
@@ -256,12 +263,11 @@
                 compassHeading = 360 - event.alpha;
             }
 
-            // Rotating the compass container to match North
-            // If heading is 90 (East), we rotate container -90 so North points Left.
+            // Using standard transform logic
             compass.style.transform = `rotate(${-compassHeading}deg)`;
 
             degreeDisplay.innerText = Math.round(compassHeading) + "°";
-            status.innerText = "Turn until the Gold Line points up!";
+            status.innerText = "در حتى يشير الخط الذهبي للأعلى!";
         }
 
         // Start everything

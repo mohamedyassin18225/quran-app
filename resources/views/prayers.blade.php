@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prayer Times | {{ $location ?? 'Unknown' }}</title>
+    <title>مواقيت الصلاة | {{ $location ?? 'غير معروف' }}</title>
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" href="/icon.png">
     <link rel="apple-touch-icon" href="/icon.png">
@@ -25,7 +26,7 @@
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Cairo', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
             color: var(--text-light);
             min-height: 100vh;
@@ -34,6 +35,7 @@
             justify-content: center;
             margin: 0;
             padding: 20px;
+            text-align: right;
         }
 
         .container {
@@ -57,16 +59,19 @@
             font-size: 1.1rem;
             color: var(--accent);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 0;
             margin-bottom: 8px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .time-display {
             font-size: 3.5rem;
-            font-weight: 300;
+            font-weight: 700;
             margin: 10px 0;
             text-shadow: 0 0 20px var(--accent-glow);
+            font-family: 'Cairo', sans-serif;
+            direction: ltr;
+            /* Time numbers usually look better LTR */
         }
 
         .date-info {
@@ -77,7 +82,7 @@
         .hijri-date {
             margin-top: 5px;
             color: #e2e8f0;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .prayers-list {
@@ -109,15 +114,16 @@
         }
 
         .prayer-name {
-            font-weight: 600;
+            font-weight: 700;
             font-size: 1.1rem;
         }
 
         .prayer-time {
-            font-family: 'Outfit', sans-serif;
-            font-variant-numeric: tabular-nums;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
             font-size: 1.2rem;
             color: var(--text-light);
+            direction: ltr;
         }
 
         .error-message {
@@ -128,23 +134,13 @@
             border-radius: 12px;
         }
 
-        /* Next Prayer Indicator */
-        .next-prayer-badge {
-            font-size: 0.75rem;
-            background: var(--accent);
-            color: #0f172a;
-            padding: 2px 8px;
-            border-radius: 12px;
-            margin-left: 10px;
-            vertical-align: middle;
-            font-weight: bold;
-        }
-
         /* Audio Controls */
         .audio-controls {
             position: absolute;
             top: 20px;
-            right: 20px;
+            left: 20px;
+            /* Swapped for RTL */
+            right: auto;
         }
 
         .btn-audio {
@@ -177,7 +173,7 @@
             color: #0f172a;
             padding: 12px 24px;
             border-radius: 50px;
-            font-weight: 600;
+            font-weight: 700;
             box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.5);
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 100;
@@ -227,7 +223,7 @@
         .tool-name {
             font-size: 0.75rem;
             color: var(--text-dim);
-            font-weight: 500;
+            font-weight: 600;
             line-height: 1.1;
         }
 
@@ -244,7 +240,7 @@
     <div class="container">
 
         <div class="audio-controls">
-            <button id="enableAudio" class="btn-audio enabled" title="Toggle Adhan Audio" onclick="toggleAudio()">
+            <button id="enableAudio" class="btn-audio enabled" title="تشغيل/إيقاف الآذان" onclick="toggleAudio()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="off-icon" style="display:none;">
@@ -267,68 +263,76 @@
             </div>
         @else
             <div class="header">
-                <!-- Location and Time (Unchanged) -->
                 <div class="location">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        style="display:inline-block; vertical-align:text-top; margin-right:4px;">
+                        style="display:inline-block; vertical-align:text-top; margin-left:4px;">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                         <circle cx="12" cy="10" r="3"></circle>
                     </svg>
                     {{ $location }}
                 </div>
-                <!-- ... rest of header ... -->
                 <div class="time-display" id="currentTime">--:--</div>
-                <div class="date-info">{{ $date['gregorian']['weekday']['en'] }}, {{ $date['gregorian']['day'] }}
-                    {{ $date['gregorian']['month']['en'] }} {{ $date['gregorian']['year'] }}
+
+                <div class="date-info">
+                    {{ $date['gregorian']['day'] }} {{ $date['gregorian']['month']['en'] }} {{ $date['gregorian']['year'] }}
                 </div>
-                <div class="hijri-date">{{ $date['hijri']['day'] }} {{ $date['hijri']['month']['en'] }}
+                <div class="hijri-date">
+                    {{ $date['hijri']['day'] }} {{ $date['hijri']['month']['ar'] ?? $date['hijri']['month']['en'] }}
                     {{ $date['hijri']['year'] }}
                 </div>
             </div>
 
             <div class="prayers-list">
+                @php
+                    $prayerNames = [
+                        'Fajr' => 'الفجر',
+                        'Dhuhr' => 'الظهر',
+                        'Asr' => 'العصر',
+                        'Maghrib' => 'المغرب',
+                        'Isha' => 'العشاء'
+                    ];
+                @endphp
                 @foreach(['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'] as $prayer)
                     <div class="prayer-item" id="row-{{ $prayer }}">
-                        <div class="prayer-name">{{ $prayer }}</div>
+                        <div class="prayer-name">{{ $prayerNames[$prayer] }}</div>
                         <div class="prayer-time">{{ $timings[$prayer] }}</div>
                     </div>
                 @endforeach
             </div>
 
-            <!-- ... Dashboard Grid ... -->
             <div class="tools-grid">
                 <a href="/quran" class="tool-item">
                     <div class="tool-icon">📖</div>
-                    <div class="tool-name">Quran</div>
+                    <div class="tool-name">القرآن</div>
                 </a>
                 <a href="/tasbih" class="tool-item">
                     <div class="tool-icon">📿</div>
-                    <div class="tool-name">Tasbih</div>
+                    <div class="tool-name">التسبيح</div>
                 </a>
                 <a href="/names" class="tool-item">
                     <div class="tool-icon">🤲</div>
-                    <div class="tool-name">Names</div>
+                    <div class="tool-name">الأسماء الحسنى</div>
                 </a>
                 <a href="/athkar" class="tool-item">
                     <div class="tool-icon">🌙</div>
-                    <div class="tool-name">Adhkar</div>
+                    <div class="tool-name">الأذكار</div>
                 </a>
                 <a href="/hijri" class="tool-item">
                     <div class="tool-icon">📅</div>
-                    <div class="tool-name">Hijri</div>
+                    <div class="tool-name">التاريخ الهجري</div>
                 </a>
                 <a href="/qibla" class="tool-item">
                     <div class="tool-icon">🧭</div>
-                    <div class="tool-name">Qibla</div>
+                    <div class="tool-name">القبلة</div>
                 </a>
                 <a href="/tajweed" class="tool-item">
                     <div class="tool-icon">📘</div>
-                    <div class="tool-name">Tajweed</div>
+                    <div class="tool-name">التجويد</div>
                 </a>
-                 <a href="/settings" class="tool-item">
+                <a href="/settings" class="tool-item">
                     <div class="tool-icon">⚙️</div>
-                    <div class="tool-name">Settings</div>
+                    <div class="tool-name">الإعدادات</div>
                 </a>
             </div>
         @endif
@@ -339,17 +343,17 @@
 
     <!-- Notification Toast -->
     <div id="adhanToast" class="adhan-toast">
-        It's time for prayer
+        حان الآن موعد الصلاة
     </div>
 
     <script>
         let audioEnabled = true; // Enabled by default
         let lastPlayedMinute = -1;
 
-        // Unlock audio context on first interaction (required by browsers)
+        // Unlock audio context on first interaction
         function unlockAudio() {
             const audio = document.getElementById('adhanAudio');
-            if(audio) {
+            if (audio) {
                 audio.muted = true;
                 audio.play().then(() => {
                     audio.pause();
@@ -376,11 +380,10 @@
                 btn.classList.add('enabled');
                 offIcon.style.display = 'none';
                 onIcon.style.display = 'block';
-                showToast('Adhan audio enabled');
-                
-                // Try to unlock immediately if user clicked
-                audio.muted = true; 
-                audio.play().then(() => { audio.pause(); audio.currentTime=0; audio.muted=false; });
+                showToast('تم تفعيل صوت الآذان');
+
+                audio.muted = true;
+                audio.play().then(() => { audio.pause(); audio.currentTime = 0; audio.muted = false; });
             } else {
                 // Disable
                 audioEnabled = false;
@@ -389,7 +392,7 @@
                 btn.classList.remove('enabled');
                 offIcon.style.display = 'block';
                 onIcon.style.display = 'none';
-                showToast('Adhan audio disabled');
+                showToast('تم إيقاف صوت الآذان');
             }
         }
 
@@ -398,15 +401,23 @@
                 const audio = document.getElementById('adhanAudio');
                 audio.currentTime = 0;
                 const playPromise = audio.play();
-                
+
                 if (playPromise !== undefined) {
                     playPromise.catch(error => {
                         console.log("Autoplay blocked:", error);
-                        showToast("Tap to play Adhan (Autoplay blocked)");
+                        showToast("اضغط لتشغيل الآذان");
                     });
                 }
             }
-            showToast("It's time for " + prayerName);
+            // Arabize prayer name for toast?
+            const prayerNamesAr = {
+                'Fajr': 'الفجر',
+                'Dhuhr': 'الظهر',
+                'Asr': 'العصر',
+                'Maghrib': 'المغرب',
+                'Isha': 'العشاء'
+            };
+            showToast("حان الآن موعد صلاة " + (prayerNamesAr[prayerName] || prayerName));
         }
 
         function showToast(message) {
@@ -420,19 +431,16 @@
 
         function updateTime() {
             const now = new Date();
+            // Use en-US for consistent time format HH:MM
             const timeString = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
             document.getElementById('currentTime').innerText = timeString;
 
-            // Allow time for server times to be rendered
             checkPrayerTime(now);
             highlightNextPrayer();
         }
 
         function checkPrayerTime(now) {
-            // Using 24h format HH:MM
             const currentHM = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-
-            // Prevent playing multiple times in the same minute
             const currentMinuteVals = now.getHours() * 60 + now.getMinutes();
             if (currentMinuteVals === lastPlayedMinute) return;
 
@@ -445,9 +453,7 @@
             ];
 
             prayers.forEach(p => {
-                // Clean the time string (remove timezone info if any, e.g., "12:00 (EET)")
                 let pTime = p.time.split(' ')[0];
-
                 if (pTime === currentHM) {
                     playAdhan(p.name);
                     lastPlayedMinute = currentMinuteVals;
@@ -456,8 +462,6 @@
         }
 
         function highlightNextPrayer() {
-            // Simple logic to highlight: requires converting 'HH:MM' strings to Date objects
-            // For MVP visual only - improved logic would compare actual timestamps
             const now = new Date();
             const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
@@ -472,7 +476,7 @@
             let activeFound = false;
 
             prayers.forEach(p => {
-                const [h, m] = p.time.split(' ')[0].split(':'); // Aladhan returns HH:MM (24h) usually, sometimes with timezone
+                const [h, m] = p.time.split(' ')[0].split(':');
                 const prayerMinutes = parseInt(h) * 60 + parseInt(m);
 
                 const row = document.getElementById('row-' + p.name);
@@ -484,7 +488,6 @@
                 }
             });
 
-            // If no next prayer found today, it means next is Fajr tomorrow
             if (!activeFound) {
                 const row = document.getElementById('row-Fajr');
                 if (row) row.classList.add('active');

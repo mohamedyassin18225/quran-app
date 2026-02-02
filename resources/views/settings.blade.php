@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings | Prayer App</title>
+    <title>الإعدادات | تطبيق الصلاة</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- PWA -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1e293b">
 
@@ -23,7 +22,7 @@
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Cairo', sans-serif;
             background-color: var(--primary);
             color: var(--text-light);
             margin: 0;
@@ -32,6 +31,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            text-align: right;
         }
 
         .container {
@@ -40,7 +40,7 @@
         }
 
         .header h1 {
-            font-weight: 300;
+            font-weight: 700;
             margin-bottom: 5px;
             text-align: center;
         }
@@ -69,10 +69,10 @@
             font-family: inherit;
             font-size: 1rem;
             appearance: none;
-            /* Custom arrow ideally, but simple for now */
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
-            background-position: right 1rem center;
+            background-position: left 1rem center;
+            /* Left for RTL */
             background-size: 1em;
         }
 
@@ -90,7 +90,7 @@
             padding: 14px;
             border-radius: 12px;
             width: 100%;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 1rem;
             margin-top: 24px;
             cursor: pointer;
@@ -102,7 +102,8 @@
         }
 
         .back-link {
-            align-self: flex-start;
+            align-self: flex-end;
+            /* Right side */
             color: var(--text-light);
             text-decoration: none;
             font-size: 1.5rem;
@@ -113,37 +114,36 @@
 
 <body>
 
-    <a href="/" class="back-link">&larr;</a>
+    <a href="/" class="back-link">&rarr;</a> <!-- Right arrow for back in RTL -->
 
     <div class="container">
         <div class="header">
-            <h1>Settings</h1>
+            <h1>الإعدادات</h1>
         </div>
 
         <div class="section">
-            <label for="method">Calculation Method</label>
+            <label for="method">طريقة حساب المواقيت</label>
             <select id="method">
-                <option value="5">Egyptian General Authority</option>
-                <option value="4">Umm Al-Qura University, Makkah</option>
-                <option value="3">Muslim World League</option>
-                <option value="2">Islamic Society of North America (ISNA)</option>
-                <option value="1">University of Islamic Sciences, Karachi</option>
-                <option value="0">Shia Ithna-Ashari, Leva Institute, Qum</option>
-                <option value="7">Institute of Geophysics, University of Tehran</option>
-                <option value="8">Gulf Region</option>
-                <option value="9">Kuwait</option>
-                <option value="10">Qatar</option>
-                <option value="11">Majlis Ugama Islam Singapura, Singapore</option>
-                <option value="12">Union Organization islamic de France</option>
-                <option value="13">Diyanet İşleri Başkanlığı, Turkey</option>
+                <option value="5">الهيئة المصرية العامة للمساحة</option>
+                <option value="4">جامعة أم القرى، مكة المكرمة</option>
+                <option value="3">رابطة العالم الإسلامي</option>
+                <option value="2">الجمعية الإسلامية لأمريكا الشمالية (ISNA)</option>
+                <option value="1">جامعة العلوم الإسلامية، كراتشي</option>
+                <option value="0">المذهب الشيعي الإثنا عشري (قم)</option>
+                <option value="8">منطقة الخليج</option>
+                <option value="9">الكويت</option>
+                <option value="10">قطر</option>
+                <option value="11">مجلس الشؤون الإسلامية، سنغافورة</option>
+                <option value="12">اتحاد المنظمات الإسلامية في فرنسا</option>
+                <option value="13">رئاسة الشؤون الدينية، تركيا</option>
             </select>
 
             <p class="info-text">
-                Different organizations use different angles for Fajr and Isha.
-                Egypt is default (Authority of Survey).
+                تختلف طرق الحساب حسب الزوايا المعتمدة للفجر والعشاء.
+                الافتراضي هو الهيئة المصرية العامة للمساحة.
             </p>
 
-            <button class="btn-save" onclick="saveSettings()">Save & Update</button>
+            <button class="btn-save" onclick="saveSettings()">حفظ التغييرات</button>
         </div>
     </div>
 
@@ -168,8 +168,8 @@
             let expires = "expires=" + d.toUTCString();
             document.cookie = "prayer_method=" + method + ";" + expires + ";path=/";
 
-            alert('Settings saved!');
-            window.location.href = "/"; // Go back home to reload with new settings
+            alert('تم حفظ الإعدادات!');
+            window.location.href = "/"; // Go back home
         }
     </script>
 </body>

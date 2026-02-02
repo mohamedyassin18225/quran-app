@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Tasbih | Prayer App</title>
+    <title>المسبحة الإلكترونية | تطبيق الصلاة</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1e293b">
@@ -22,7 +22,7 @@
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Cairo', sans-serif;
             background-color: var(--primary);
             color: var(--text-light);
             margin: 0;
@@ -66,15 +66,16 @@
 
         .count-display {
             font-size: 5rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--accent);
             line-height: 1;
         }
 
         .label {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             color: #94a3b8;
             margin-top: 10px;
+            font-weight: 600;
         }
 
         .controls {
@@ -90,6 +91,8 @@
             color: var(--text-light);
             padding: 12px 24px;
             border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.2s;
@@ -106,7 +109,9 @@
         .back-link {
             position: absolute;
             top: 20px;
-            left: 20px;
+            right: 20px;
+            /* Swapped for RTL */
+            left: auto;
             color: var(--text-light);
             text-decoration: none;
             font-size: 1.5rem;
@@ -117,26 +122,26 @@
 
 <body>
 
-    <a href="/" class="back-link">&larr;</a>
+    <a href="/" class="back-link">&rarr;</a>
 
     <div class="container">
-        <h1 style="margin-bottom: 40px; font-weight: 300;">Digital Tasbih</h1>
+        <h1 style="margin-bottom: 40px; font-weight: 600;">المسبحة الإلكترونية</h1>
 
         <div class="circle-container" id="tapArea">
             <div class="count-display" id="countDisplay">0</div>
-            <div class="label">SubhanAllah</div>
+            <div class="label">سبحان الله</div>
         </div>
 
         <div class="controls">
-            <button onclick="resetCount()" class="reset">Reset</button>
-            <button onclick="changeDhikr()">Change Dhikr</button>
+            <button onclick="resetCount()" class="reset">تصفير</button>
+            <button onclick="changeDhikr()">تغيير الذكر</button>
         </div>
     </div>
 
     <script>
         let count = 0;
         let currentDhikrIndex = 0;
-        const dhikrs = ["SubhanAllah", "Alhamdulillah", "Allahu Akbar", "Astaghfirullah", "La ilaha illallah"];
+        const dhikrs = ["سبحان الله", "الحمد لله", "الله أكبر", "أستغفر الله", "لا إله إلا الله"];
 
         const countDisplay = document.getElementById('countDisplay');
         const tapArea = document.getElementById('tapArea');
@@ -171,7 +176,7 @@
         }
 
         function resetCount() {
-            if (confirm('Reset counter to 0?')) {
+            if (confirm('هل تريد تصفير العداد؟')) {
                 count = 0;
                 countDisplay.innerText = count;
                 localStorage.setItem('tasbihCount', count);
