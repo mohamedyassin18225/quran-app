@@ -69,9 +69,20 @@
             padding: 10px 15px;
             border-radius: 10px;
             font-weight: 700;
-            min-width: 80px;
+            min-width: 120px;
+            /* Wider for Gregorian */
             text-align: center;
             color: var(--accent);
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .event-date .hijri-small {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-weight: 400;
         }
 
         .event-name {
@@ -86,12 +97,6 @@
             font-size: 1.5rem;
             margin-bottom: 20px;
         }
-
-        .loading {
-            text-align: center;
-            margin-top: 20px;
-            color: var(--text-dim);
-        }
     </style>
 </head>
 
@@ -102,16 +107,18 @@
     <div class="container">
         <div class="header">
             <h1>المناسبات الإسلامية</h1>
-            <p id="current-hijri-date" style="color:var(--text-dim); text-align:center;">جاري تحميل التاريخ...</p>
+            <p id="current-hijri-date" style="color:var(--text-dim); text-align:center;">جاري تحميل التواريخ
+                الميلادية...</p>
         </div>
 
         <div id="events-list">
-            <!-- Events will be populated here -->
             @foreach($events as $event)
-                <div class="event-card" data-month="{{ $event['month'] }}" data-day="{{ $event['day'] }}">
+                <div class="event-card" id="event-{{ $event['month'] }}-{{ $event['day'] }}"
+                    data-month="{{ $event['month'] }}" data-day="{{ $event['day'] }}">
                     <div class="event-name">{{ $event['name'] }}</div>
                     <div class="event-date">
-                        {{ $event['day'] }} / {{ $event['month'] }}
+                        <span class="gregorian">...</span>
+                        <span class="hijri-small">{{ $event['day'] }} / {{ $event['month'] }} (هجري)</span>
                     </div>
                 </div>
             @endforeach
@@ -119,10 +126,9 @@
     </div>
 
     <script>
-        // Fetch current Hijri date to highlight upcoming events
         async function initCalendar() {
             try {
-                // Aladhan API for current date
+                // 1. Get Today's Hijri Date to determine Year
                 const today = new Date();
                 const d = today.getDate();
                 const m = today.getMonth() + 1;
@@ -133,52 +139,106 @@
 
                 if (data.code === 200) {
                     const hijri = data.data.hijri;
-                    const hDay = parseInt(hijri.day);
-                    const hMonth = parseInt(hijri.month.number);
-                    const hYear = hijri.year;
+                    const curHDay = parseInt(hijri.day);
+                    const curHMonth = parseInt(hijri.month.number);
+                    const curHYear = parseInt(hijri.year);
 
                     document.getElementById('current-hijri-date').innerText =
-                        `اليوم: ${hDay} ${hijri.month.ar} ${hYear} هـ`;
+                        `العام الهجري الحالي: ${curHYear}`;
 
-                    highlightUpcoming(hMonth, hDay);
+                    // 2. Process each event
+                    const cards = document.querySelectorAll('.event-card');
+
+                    // Arrays to perform batch or sequential updates
+                    // Note: Aladhan has rate limits, but sequential client calls usually ok for ~10 items
+
+                    for (const card of cards) {
+                        const eMonth = parseInt(card.dataset.month);
+                        const eDay = parseInt(card.dataset.day);
+
+                        // Determine target Hijri Year (Current or Next)
+                        let targetHYear = curHYear;
+
+                        // Simple logic: If event month is before current month, it's next year
+                        // Or if same month but day is passed
+                        if (eMonth < curHMonth || (eMonth === curHMonth && eDay < curHDay)) {
+                            targetHYear = curHYear + 1;
+                        }
+
+                        // Mark if upcoming (nearest future event)
+                        // This logic can be refined, but let's first get the date
+
+                        await fetchGregorianDate(card, eDay, eMonth, targetHYear);
+                    }
+
+                    highlightNextEvent();
                 }
             } catch (e) {
-                console.error("Failed to fetch Hijri date", e);
-                document.getElementById('current-hijri-date').innerText = "تعذر تحميل التاريخ الحالي";
+                console.error("Calendar init failed", e);
+                document.getElementById('current-hijri-date').innerText = "تعذر تحميل التواريخ";
             }
         }
 
-        function highlightUpcoming(currentMonth, currentDay) {
+        async function fetchGregorianDate(card, day, month, year) {
+            try {
+                // API expects DD-MM-YYYY (Hijri)
+                const url = `https://api.aladhan.com/v1/hToG/${day}-${month}-${year}`;
+                const resp = await fetch(url);
+                const json = await resp.json();
+
+                if (json.code === 200) {
+                    const greg = json.data.gregorian;
+                    // Format: "11 Mar 2024"
+                    // Manually translating months or using API's en month
+                    // Let's use standard locale Date string
+                    const dateObj = new Date(greg.date.split('-').reverse().join('-')); // DD-MM-YYYY -> YYYY-MM-DD for standard parse? API returns DD-MM-YYYY
+                    // Wait, API returns DD-MM-YYYY. new Date() expects ISO YYYY-MM-DD or MM/DD/YYYY
+                    const [gDay, gMonth, gYear] = greg.date.split('-');
+                    const dateParsed = new Date(`${gYear}-${gMonth}-${gDay}`);
+
+                    const options = { year: 'numeric', month: 'short', day: 'numeric', weekday: 'short' };
+                    // Force AR locale for display if possible, or EN as user requested Gregorian (usually Western format implies Western names, but Arabs use Jan/Feb too)
+                    // Let's use Arabic-Egypt locale for Gregorian month names (Yanayir, Fibrayir etc or just standard)
+                    const dateStr = dateParsed.toLocaleDateString('ar-EG', options); // 'ar-EG' usually gives good localized Gregorian
+
+                    card.querySelector('.gregorian').innerText = dateStr;
+                    card.dataset.gregorianIso = `${gYear}-${gMonth}-${gDay}`; // Store for sorting/highlighting
+                }
+            } catch (e) {
+                console.error("Failed to convert date", e);
+                card.querySelector('.gregorian').innerText = "خطأ";
+            }
+        }
+
+        function highlightNextEvent() {
             const cards = document.querySelectorAll('.event-card');
-            let nextEvent = null;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let nextCard = null;
             let minDiff = Infinity;
 
             cards.forEach(card => {
-                const eMonth = parseInt(card.dataset.month);
-                const eDay = parseInt(card.dataset.day);
+                const iso = card.dataset.gregorianIso;
+                if (!iso) return;
 
-                // Calculate days from year start approx (ignoring 29/30 diff)
-                const currentDayOfYear = (currentMonth - 1) * 30 + currentDay;
-                const eventDayOfYear = (eMonth - 1) * 30 + eDay;
-
-                let diff = eventDayOfYear - currentDayOfYear;
-
-                // If event passed this year, it's next year (add 354 days)
-                if (diff < 0) diff += 354;
+                const eventDate = new Date(iso);
+                const diff = eventDate - today;
 
                 if (diff >= 0 && diff < minDiff) {
                     minDiff = diff;
-                    nextEvent = card;
+                    nextCard = card;
                 }
             });
 
-            if (nextEvent) {
-                nextEvent.classList.add('upcoming');
+            if (nextCard) {
+                nextCard.classList.add('upcoming');
                 const badge = document.createElement('span');
                 badge.innerText = ' (القادمة)';
                 badge.style.fontSize = '0.8rem';
                 badge.style.color = 'var(--accent)';
-                nextEvent.querySelector('.event-name').appendChild(badge);
+                badge.style.marginRight = '5px';
+                nextCard.querySelector('.event-name').appendChild(badge);
             }
         }
 
