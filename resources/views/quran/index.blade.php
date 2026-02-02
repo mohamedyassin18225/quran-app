@@ -146,32 +146,106 @@
                 </svg>
             </a>
             <h1>القرآن الكريم</h1>
-            <div id="resume-container" style="display:none; margin-top:20px;">
-                <a id="resume-btn" href="#" style="background: var(--accent); color: #0f172a; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px;">
-                    <span>🔖 تابع القراءة: </span>
-                    <span id="resume-text"></span>
-                </a>
+            <a href="/quran/search" class="search-link"
+                style="color:var(--accent); text-decoration:none; display:flex; gap:5px; align-items:center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span>بحث</span>
+            </a>
+            <div id="resume-container" style="display:none; margin-top:20px; width:100%; max-width:500px;">
+                <!-- Khatma Dashboard -->
+                <div class="khatma-card" style="background:var(--secondary); padding:20px; border-radius:16px; margin-bottom:20px; border:1px solid rgba(255,255,255,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <h3 style="margin:0; color:var(--accent);">متابعة الختمة</h3>
+                        <div id="khatma-days-left" style="font-size:0.9rem; color:var(--text-dim);"></div>
+                    </div>
+                    
+                    <div class="progress-bar" style="background:rgba(0,0,0,0.3); height:10px; border-radius:10px; overflow:hidden; margin-bottom:10px;">
+                        <div id="progress-fill" style="background:var(--accent); width:0%; height:100%; transition:width 0.5s;"></div>
+                    </div>
+                    
+                    <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:15px;">
+                        <span id="progress-text">0% مكتمل</span>
+                        <span id="ayahs-left">6236 آية متبقية</span>
+                    </div>
+
+                    <div style="display:flex; gap:10px; justify-content:flex-end;">
+                        <a id="resume-btn" href="#" style="background:var(--accent); color:#0f172a; padding:8px 20px; border-radius: 20px; text-decoration:none; font-weight:bold; font-size:0.9rem;">
+                            تابع القراءة
+                        </a>
+                        <button onclick="configureKhatma()" style="background:transparent; border:1px solid var(--text-dim); color:var(--text-light); padding:8px 15px; border-radius:20px; cursor:pointer; font-family:'Cairo';">
+                            ⚙️ إعداد الخطة
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
         <script>
+            // Surah Ayah Counts (1-114)
+            const surahAyahs = [7, 286, 200, 176, 120, 165, 206, 75, 129, 109, 123, 111, 43, 52, 99, 128, 111, 110, 98, 135, 112, 78, 118, 64, 77, 227, 93, 88, 69, 60, 34, 30, 73, 54, 45, 83, 182, 88, 75, 85, 54, 53, 89, 59, 37, 35, 38, 29, 18, 45, 60, 49, 62, 55, 78, 96, 29, 22, 24, 13, 14, 11, 11, 18, 12, 12, 30, 52, 52, 44, 28, 28, 20, 56, 40, 31, 50, 40, 46, 42, 29, 19, 36, 25, 22, 17, 19, 26, 30, 20, 15, 21, 11, 8, 8, 19, 5, 8, 8, 11, 11, 8, 3, 9, 5, 4, 7, 3, 6, 3, 5, 4, 5, 6];
+
+            function getProgress(surahNum, ayahNum) {
+                let totalRead = 0;
+                for (let i = 0; i < surahNum - 1; i++) {
+                    totalRead += surahAyahs[i];
+                }
+                totalRead += ayahNum;
+                return totalRead;
+            }
+
             document.addEventListener('DOMContentLoaded', () => {
                 const saved = localStorage.getItem('khatma_bookmark');
+                const container = document.getElementById('resume-container');
+                
                 if (saved) {
                     try {
                         const data = JSON.parse(saved);
                         if (data && data.surah && data.ayah) {
-                            const container = document.getElementById('resume-container');
                             const btn = document.getElementById('resume-btn');
-                            const text = document.getElementById('resume-text');
                             
-                            text.innerText = `${data.name} - آية ${data.ayah}`;
+                            // Update Resume Button
+                            btn.innerHTML = `📖 تابع: ${data.name} (${data.ayah})`;
                             btn.href = `/quran/${data.surah}#ayah-${data.ayah}`;
                             container.style.display = 'block';
+
+                            // Update Progress
+                            const totalAyahs = 6236;
+                            const readAyahs = getProgress(parseInt(data.surah), parseInt(data.ayah));
+                            const percent = ((readAyahs / totalAyahs) * 100).toFixed(1);
+                            
+                            document.getElementById('progress-fill').style.width = `${percent}%`;
+                            document.getElementById('progress-text').innerText = `${percent}% مكتمل`;
+                            document.getElementById('ayahs-left').innerText = `${totalAyahs - readAyahs} آية متبقية`;
+
+                            // Check Goal
+                            const goal = localStorage.getItem('khatma_goal_days');
+                            const goalStart = localStorage.getItem('khatma_start_date');
+                            if (goal && goalStart) {
+                                const startDate = new Date(parseInt(goalStart));
+                                const now = new Date();
+                                const daysPassed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+                                const daysLeft = Math.max(0, parseInt(goal) - daysPassed);
+                                
+                                document.getElementById('khatma-days-left').innerText = `📅 باقي ${daysLeft} يوم`;
+                            }
                         }
-                    } catch(e) { console.error("Bookmark parse error", e); }
+                    } catch (e) { console.error("Bookmark parse error", e); }
                 }
             });
+
+            function configureKhatma() {
+                const days = prompt("كم يوماً تريد لختم القرآن؟ (مثال: 30)", localStorage.getItem('khatma_goal_days') || "30");
+                if (days && !isNaN(days)) {
+                    localStorage.setItem('khatma_goal_days', days);
+                    localStorage.setItem('khatma_start_date', new Date().getTime());
+                    alert(`تم حفظ الخطة! هدفك ختم القرآن في ${days} يوم.`);
+                    location.reload();
+                }
+            }
         </script>
 
         <div class="surah-grid">
@@ -183,7 +257,8 @@
                             <!-- Helper to clean name if it has "Surah" prefix, although 'name' usually has it in Arabic -->
                             <div class="arabic-name">{{ $surah['name'] }}</div>
                             <div class="verses-count">{{ $surah['numberOfAyahs'] }} آية •
-                                {{ $surah['revelationType'] === 'Meccan' ? 'مكية' : 'مدنية' }}</div>
+                                {{ $surah['revelationType'] === 'Meccan' ? 'مكية' : 'مدنية' }}
+                            </div>
                         </div>
                     </div>
                 </a>

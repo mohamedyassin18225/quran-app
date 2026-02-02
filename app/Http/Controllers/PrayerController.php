@@ -95,6 +95,11 @@ class PrayerController extends Controller
         return view('quran.index', ['surahs' => $surahs]);
     }
 
+    public function quranSearch()
+    {
+        return view('quran.search');
+    }
+
     public function surah($number)
     {
         // Fetch Surah with Arabic text AND Tafsir (Al-Jalalayn)

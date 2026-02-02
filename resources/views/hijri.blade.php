@@ -12,6 +12,7 @@
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1e293b">
+    <script src="/js/theme.js"></script>
 
     <style>
         :root {
@@ -95,6 +96,8 @@
         }
 
         .result {
+            display: none;
+            /* Hidden by default */
             margin-top: 30px;
             background: rgba(16, 185, 129, 0.1);
             padding: 20px;
@@ -107,12 +110,18 @@
             font-weight: 700;
             color: var(--accent);
             margin-bottom: 5px;
-            direction: rtl; 
+            direction: rtl;
+        }
+
+        .offset-info {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-top: 10px;
         }
 
         .back-link {
-            align-self: flex-start; /* Stays visual left or right? Container is flex column center? No body is flex column center */
-            align-self: flex-end; /* Right side for RTL */
+            align-self: flex-end;
+            /* Right side for RTL */
             color: var(--text-light);
             text-decoration: none;
             font-size: 1.5rem;
@@ -135,27 +144,105 @@
         </div>
 
         <div class="card">
-            <form action="/hijri" method="GET">
+            <div>
                 <label for="date">اختر التاريخ الميلادي:</label>
-                <input type="date" id="date" name="date" required value="{{ request('date') ?? date('Y-m-d') }}">
-                <button type="submit">تحويل</button>
-            </form>
+                <input type="date" id="date" value="">
+                <button onclick="convertDate()">تحويل</button>
+            </div>
 
-            @if(isset($conversionResult))
-                <div class="result">
-                    <div style="font-size:0.9rem; color:var(--text-dim); margin-bottom:5px;">التاريخ الهجري</div>
-                    <div class="hijri-big">
-                        {{ $conversionResult['hijri']['day'] }}
-                        {{ $conversionResult['hijri']['month']['ar'] }}
-                        {{ $conversionResult['hijri']['year'] }}
-                    </div>
-                    <div style="font-size:0.9rem; margin-top:5px; opacity:0.8;">
-                        {{ $conversionResult['hijri']['weekday']['ar'] }}
-                    </div>
+            <div class="result" id="result-box">
+                <div style="font-size:0.9rem; color:var(--text-dim); margin-bottom:5px;">التاريخ الهجري</div>
+                <div class="hijri-big" id="hijri-text">
+                    <!-- Result -->
                 </div>
-            @endif
+                <div style="font-size:0.9rem; margin-top:5px; opacity:0.8;" id="weekday-text">
+                    <!-- Weekday -->
+                </div>
+                <div class="offset-info" id="offset-info"></div>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Set today as default
+        document.getElementById('date').valueAsDate = new Date();
+
+        // Run on load if needed or wait for user
+        // convertDate();
+
+        async function convertDate() {
+            const inputDate = document.getElementById('date').value;
+            if (!inputDate) return;
+
+            const resultBox = document.getElementById('result-box');
+            const hijriText = document.getElementById('hijri-text');
+            const weekdayText = document.getElementById('weekday-text');
+            const offsetInfo = document.getElementById('offset-info');
+
+            // Get Offset
+            const offset = parseInt(localStorage.getItem('hijri_offset') || '0');
+
+            // Adjust Date logic:
+            // Aladhan API takes DD-MM-YYYY.
+            // If offset is +1, we actually want to Ask API for "Date + 1 day" -> Result.
+            // Wait, "Hijri Adjustment" usually means "The moon was sighted earlier/later".
+            // If offset is +1, it means today (Gregorian) corresponds to (Hijri + 1).
+            // So getting the API result for GREGORIAN date will give standard Hijri.
+            // We need to add days to the RESULT Hijri date? Or input Gregorian?
+            // "Hijri Date Adjustment" typically shifts the Hijri day up or down.
+            // Example: Today is 10th. Adjustment +1 => Display 11th.
+            // So we fetch standard conversion, then manipulate the Hijri Day.
+
+            try {
+                const [y, m, d] = inputDate.split('-');
+                const response = await fetch(`https://api.aladhan.com/v1/gToH/${d}-${m}-${y}`);
+                const data = await response.json();
+
+                if (data.code === 200) {
+                    const hijri = data.data.hijri;
+                    let hDay = parseInt(hijri.day);
+                    let hMonth = hijri.month.ar;
+                    let hYear = hijri.year;
+                    let weekday = hijri.weekday.ar;
+
+                    // Apply Offset
+                    if (offset !== 0) {
+                        // Simple day addition. (Note: Month overflow is complex without API recalculation, 
+                        // but usually offset is small +/- 1-2 days).
+                        // Full correct way: Convert Hijri to Epoch, add days, convert back? No standard library here.
+                        // Approximation: Just change day number. If > 30, user understands validation limits usually, 
+                        // or we can just say "Adjusted".
+                        // Use ALADHAN ADJUSTMENT parameter? 
+                        // Aladhan has `adjustment` param! /gToH?adjustment=1
+                        // Let's use THAT!
+                    }
+
+                    // Actually, let's call API WITH adjustment parameter if supported.
+                    // Checking Aladhan docs... yes `adjustment` parameter exists.
+
+                    const urlWithAdj = `https://api.aladhan.com/v1/gToH/${d}-${m}-${y}?adjustment=${offset}`;
+                    const respAdj = await fetch(urlWithAdj);
+                    const dataAdj = await respAdj.json();
+
+                    if (dataAdj.code === 200) {
+                        const h = dataAdj.data.hijri;
+                        hijriText.innerText = `${h.day} ${h.month.ar} ${h.year}`;
+                        weekdayText.innerText = h.weekday.ar;
+
+                        if (offset !== 0) {
+                            offsetInfo.innerText = `(تم تطبيق تعديل: ${offset > 0 ? '+' : ''}${offset} يوم)`;
+                        } else {
+                            offsetInfo.innerText = '';
+                        }
+                        resultBox.style.display = 'block';
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+                alert("حدث خطأ في التحويل");
+            }
+        }
+    </script>
 
 </body>
 

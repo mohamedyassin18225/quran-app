@@ -151,6 +151,15 @@
                 <option value="gold">الذهبي (بني)</option>
             </select>
 
+            <label for="hijri_adj" style="margin-top: 25px;">تعديل التاريخ الهجري (أيام)</label>
+            <select id="hijri_adj">
+                <option value="-2">-2 يوم</option>
+                <option value="-1">-1 يوم</option>
+                <option value="0" selected>0 (تلقائي)</option>
+                <option value="1">+1 يوم</option>
+                <option value="2">+2 يوم</option>
+            </select>
+
             <button class="btn-save" onclick="saveSettings()">حفظ التغييرات</button>
         </div>
     </div>
@@ -170,15 +179,23 @@
         const currentTheme = localStorage.getItem('app_theme') || 'default';
         document.getElementById('theme').value = currentTheme;
 
+        // Set initial offset
+        const currentAdj = localStorage.getItem('hijri_offset') || '0';
+        document.getElementById('hijri_adj').value = currentAdj;
+
         function saveSettings() {
             const selectMethod = document.getElementById('method');
             const method = selectMethod.value;
-            
+
             const selectTheme = document.getElementById('theme');
             const theme = selectTheme.value;
 
             // Save Theme
             localStorage.setItem('app_theme', theme);
+
+            // Save Hijri Offset
+            const adj = document.getElementById('hijri_adj').value;
+            localStorage.setItem('hijri_offset', adj);
 
             // Save Method Cookie
             const d = new Date();
