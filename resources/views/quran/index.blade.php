@@ -155,28 +155,35 @@
                 </svg>
                 <span>بحث</span>
             </a>
-            <div id="resume-container" style="display:none; margin-top:20px; width:100%; max-width:500px;">
+            <div id="resume-container" style="margin-top:20px; width:100%; max-width:500px;">
                 <!-- Khatma Dashboard -->
-                <div class="khatma-card" style="background:var(--secondary); padding:20px; border-radius:16px; margin-bottom:20px; border:1px solid rgba(255,255,255,0.05);">
+                <div class="khatma-card"
+                    style="background:var(--secondary); padding:20px; border-radius:16px; margin-bottom:20px; border:1px solid rgba(255,255,255,0.05);">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                         <h3 style="margin:0; color:var(--accent);">متابعة الختمة</h3>
                         <div id="khatma-days-left" style="font-size:0.9rem; color:var(--text-dim);"></div>
                     </div>
-                    
-                    <div class="progress-bar" style="background:rgba(0,0,0,0.3); height:10px; border-radius:10px; overflow:hidden; margin-bottom:10px;">
-                        <div id="progress-fill" style="background:var(--accent); width:0%; height:100%; transition:width 0.5s;"></div>
+
+                    <div class="progress-bar"
+                        style="background:rgba(0,0,0,0.3); height:10px; border-radius:10px; overflow:hidden; margin-bottom:10px;">
+                        <div id="progress-fill"
+                            style="background:var(--accent); width:0%; height:100%; transition:width 0.5s;"></div>
                     </div>
-                    
+
                     <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:15px;">
                         <span id="progress-text">0% مكتمل</span>
                         <span id="ayahs-left">6236 آية متبقية</span>
                     </div>
 
                     <div style="display:flex; gap:10px; justify-content:flex-end;">
-                        <a id="resume-btn" href="#" style="background:var(--accent); color:#0f172a; padding:8px 20px; border-radius: 20px; text-decoration:none; font-weight:bold; font-size:0.9rem;">
+                        <a id="resume-btn" href="#"
+                            style="background:var(--accent); color:#0f172a; padding:8px 20px; border-radius: 20px; text-decoration:none; font-weight:bold; font-size:0.9rem; display:none;">
                             تابع القراءة
                         </a>
-                        <button onclick="configureKhatma()" style="background:transparent; border:1px solid var(--text-dim); color:var(--text-light); padding:8px 15px; border-radius:20px; cursor:pointer; font-family:'Cairo';">
+                        <span id="start-msg" style="color:var(--text-dim); font-size:0.9rem; align-self:center;">ابدأ
+                            القراءة لتفعيل العداد</span>
+                        <button onclick="configureKhatma()"
+                            style="background:transparent; border:1px solid var(--text-dim); color:var(--text-light); padding:8px 15px; border-radius:20px; cursor:pointer; font-family:'Cairo';">
                             ⚙️ إعداد الخطة
                         </button>
                     </div>
@@ -200,23 +207,25 @@
             document.addEventListener('DOMContentLoaded', () => {
                 const saved = localStorage.getItem('khatma_bookmark');
                 const container = document.getElementById('resume-container');
-                
+
                 if (saved) {
                     try {
                         const data = JSON.parse(saved);
                         if (data && data.surah && data.ayah) {
                             const btn = document.getElementById('resume-btn');
-                            
+
                             // Update Resume Button
                             btn.innerHTML = `📖 تابع: ${data.name} (${data.ayah})`;
                             btn.href = `/quran/${data.surah}#ayah-${data.ayah}`;
-                            container.style.display = 'block';
+                            btn.style.display = 'inline-flex';
+                            document.getElementById('start-msg').style.display = 'none';
+                            // container.style.display = 'block'; // Already visible default
 
                             // Update Progress
                             const totalAyahs = 6236;
                             const readAyahs = getProgress(parseInt(data.surah), parseInt(data.ayah));
                             const percent = ((readAyahs / totalAyahs) * 100).toFixed(1);
-                            
+
                             document.getElementById('progress-fill').style.width = `${percent}%`;
                             document.getElementById('progress-text').innerText = `${percent}% مكتمل`;
                             document.getElementById('ayahs-left').innerText = `${totalAyahs - readAyahs} آية متبقية`;
@@ -229,7 +238,7 @@
                                 const now = new Date();
                                 const daysPassed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
                                 const daysLeft = Math.max(0, parseInt(goal) - daysPassed);
-                                
+
                                 document.getElementById('khatma-days-left').innerText = `📅 باقي ${daysLeft} يوم`;
                             }
                         }
