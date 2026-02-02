@@ -9,20 +9,33 @@ class PrayerController extends Controller
 {
     public function index(Request $request)
     {
-        // Default location: Cairo, Egypt
-        $city = 'Cairo';
-        $country = 'Egypt';
-
         // Get method from Cookie or default to 5 (Egyptian)
         $method = $request->cookie('prayer_method', 5);
 
-        // Method 5: Egyptian General Authority of Survey
-        // You can change the method index based on preference: https://aladhan.com/prayer-times-api#methods
-        $response = Http::get('http://api.aladhan.com/v1/timingsByCity', [
-            'city' => $city,
-            'country' => $country,
-            'method' => $method,
-        ]);
+        // Check for Geolocation (Query Params or Cookie)
+        $lat = $request->query('lat') ?? $request->cookie('lat');
+        $lng = $request->query('lng') ?? $request->cookie('lng');
+
+        if ($lat && $lng) {
+            // Fetch by Coordinates
+            $response = Http::get("http://api.aladhan.com/v1/timings", [
+                'latitude' => $lat,
+                'longitude' => $lng,
+                'method' => $method,
+            ]);
+            $locationLabel = "موقعي الحالي"; // "My Current Location"
+        } else {
+            // Default location: Cairo, Egypt
+            $city = 'Cairo';
+            $country = 'Egypt';
+
+            $response = Http::get('http://api.aladhan.com/v1/timingsByCity', [
+                'city' => $city,
+                'country' => $country,
+                'method' => $method,
+            ]);
+            $locationLabel = "$city, $country";
+        }
 
         $data = $response->json();
 
@@ -30,10 +43,17 @@ class PrayerController extends Controller
             $timings = $data['data']['timings'];
             $date = $data['data']['date'];
 
+            // Store lat/lng in cookie if passed via query to persist it
+            if ($request->query('lat') && $request->query('lng')) {
+                // Laravel cookies (queued for response)
+                cookie()->queue(cookie()->forever('lat', $lat));
+                cookie()->queue(cookie()->forever('lng', $lng));
+            }
+
             return view('prayers', [
                 'timings' => $timings,
                 'date' => $date,
-                'location' => "$city, $country"
+                'location' => $locationLabel
             ]);
         }
 

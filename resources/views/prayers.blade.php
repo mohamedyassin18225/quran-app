@@ -263,7 +263,7 @@
             </div>
         @else
             <div class="header">
-                <div class="location">
+                <div class="location" onclick="requestLocation()" style="cursor: pointer;" title="تحديث الموقع">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         style="display:inline-block; vertical-align:text-top; margin-left:4px;">
@@ -271,6 +271,7 @@
                         <circle cx="12" cy="10" r="3"></circle>
                     </svg>
                     {{ $location }}
+                    <span style="font-size: 0.8rem; opacity: 0.7; margin-right: 5px;">(تحديث)</span>
                 </div>
                 <div class="time-display" id="currentTime">--:--</div>
 
@@ -491,6 +492,26 @@
             if (!activeFound) {
                 const row = document.getElementById('row-Fajr');
                 if (row) row.classList.add('active');
+            }
+        }
+
+        function requestLocation() {
+            if (navigator.geolocation) {
+                // Show loading state if desired
+                document.querySelector('.location').innerHTML = '...جارِ تحديد الموقع';  navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        // Reload with coordinates
+                        window.location.href = `/?lat=${lat}&lng=${lng}`;
+                    },
+                    (error) => {
+                        alert('تعذر الوصول إلى الموقع. يرجى تفعيل GPS.');
+                        location.reload(); // Reset text
+                    }
+                );
+            } else {
+                alert('المتصفح لا يدعم تحديد الموقع.');
             }
         }
 
