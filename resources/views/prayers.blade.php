@@ -188,6 +188,54 @@
             transform: translateX(-50%) translateY(0);
             opacity: 1;
         }
+
+        /* Dashboard Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .tool-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 12px 5px;
+            text-align: center;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1;
+        }
+
+        .tool-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+
+        .tool-icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .tool-name {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-weight: 500;
+            line-height: 1.1;
+        }
+
+        @media (max-width: 380px) {
+            .tools-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
     </style>
 </head>
 
@@ -196,17 +244,17 @@
     <div class="container">
 
         <div class="audio-controls">
-            <button id="enableAudio" class="btn-audio" title="Enable Adhan Audio" onclick="toggleAudio()">
+            <button id="enableAudio" class="btn-audio enabled" title="Toggle Adhan Audio" onclick="toggleAudio()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="off-icon">
+                    class="off-icon" style="display:none;">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                     <line x1="23" y1="9" x2="17" y2="15"></line>
                     <line x1="17" y1="9" x2="23" y2="15"></line>
                 </svg>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="on-icon" style="display:none;">
+                    class="on-icon">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                     <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
                 </svg>
@@ -219,6 +267,7 @@
             </div>
         @else
             <div class="header">
+                <!-- Location and Time (Unchanged) -->
                 <div class="location">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -228,6 +277,7 @@
                     </svg>
                     {{ $location }}
                 </div>
+                <!-- ... rest of header ... -->
                 <div class="time-display" id="currentTime">--:--</div>
                 <div class="date-info">{{ $date['gregorian']['weekday']['en'] }}, {{ $date['gregorian']['day'] }}
                     {{ $date['gregorian']['month']['en'] }} {{ $date['gregorian']['year'] }}
@@ -245,19 +295,40 @@
                     </div>
                 @endforeach
             </div>
-            <div class="footer-links"
-                style="text-align:center; margin-top:25px; display:flex; gap:10px; justify-content:center;">
-                <a href="/athkar"
-                    style="color:var(--text-dim); text-decoration:none; font-size:0.9rem; border:1px solid rgba(255,255,255,0.1); padding:8px 16px; border-radius:30px; transition:all 0.3s;">
-                    📖 Morning & Evening Adhkar
+
+            <!-- ... Dashboard Grid ... -->
+            <div class="tools-grid">
+                <a href="/quran" class="tool-item">
+                    <div class="tool-icon">📖</div>
+                    <div class="tool-name">Quran</div>
                 </a>
-                <a href="/quran"
-                    style="color:var(--text-dim); text-decoration:none; font-size:0.9rem; border:1px solid rgba(255,255,255,0.1); padding:8px 16px; border-radius:30px; transition:all 0.3s;">
-                    ☪️ Holy Quran
+                <a href="/tasbih" class="tool-item">
+                    <div class="tool-icon">📿</div>
+                    <div class="tool-name">Tasbih</div>
                 </a>
-                <a href="/tajweed"
-                    style="color:var(--text-dim); text-decoration:none; font-size:0.9rem; border:1px solid rgba(255,255,255,0.1); padding:8px 16px; border-radius:30px; transition:all 0.3s;">
-                    📘 Tajweed Rules
+                <a href="/names" class="tool-item">
+                    <div class="tool-icon">🤲</div>
+                    <div class="tool-name">Names</div>
+                </a>
+                <a href="/athkar" class="tool-item">
+                    <div class="tool-icon">🌙</div>
+                    <div class="tool-name">Adhkar</div>
+                </a>
+                <a href="/hijri" class="tool-item">
+                    <div class="tool-icon">📅</div>
+                    <div class="tool-name">Hijri</div>
+                </a>
+                <a href="/qibla" class="tool-item">
+                    <div class="tool-icon">🧭</div>
+                    <div class="tool-name">Qibla</div>
+                </a>
+                <a href="/tajweed" class="tool-item">
+                    <div class="tool-icon">📘</div>
+                    <div class="tool-name">Tajweed</div>
+                </a>
+                 <a href="/settings" class="tool-item">
+                    <div class="tool-icon">⚙️</div>
+                    <div class="tool-name">Settings</div>
                 </a>
             </div>
         @endif
@@ -272,8 +343,26 @@
     </div>
 
     <script>
-        let audioEnabled = false;
+        let audioEnabled = true; // Enabled by default
         let lastPlayedMinute = -1;
+
+        // Unlock audio context on first interaction (required by browsers)
+        function unlockAudio() {
+            const audio = document.getElementById('adhanAudio');
+            if(audio) {
+                audio.muted = true;
+                audio.play().then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    audio.muted = false;
+                }).catch(e => console.log("Unlock failed (waiting for interaction)", e));
+            }
+            document.removeEventListener('click', unlockAudio);
+            document.removeEventListener('touchstart', unlockAudio);
+        }
+        document.addEventListener('click', unlockAudio);
+        document.addEventListener('touchstart', unlockAudio);
+
 
         function toggleAudio() {
             const audio = document.getElementById('adhanAudio');
@@ -282,32 +371,25 @@
             const onIcon = btn.querySelector('.on-icon');
 
             if (!audioEnabled) {
-                // Try playing muted first - this is always allowed
-                audio.muted = true;
-
-                audio.play().then(() => {
-                    // Audio started (muted)
-                    audio.pause();
-                    audio.currentTime = 0;
-                    audio.muted = false; // Unmute for future use
-                    audioEnabled = true;
-
-                    btn.classList.add('enabled');
-                    offIcon.style.display = 'none';
-                    onIcon.style.display = 'block';
-
-                    showToast('Adhan audio enabled');
-                }).catch(e => {
-                    console.error("Audio unlock failed", e);
-                    alert('Could not enable audio: ' + e.message);
-                });
+                // Enable
+                audioEnabled = true;
+                btn.classList.add('enabled');
+                offIcon.style.display = 'none';
+                onIcon.style.display = 'block';
+                showToast('Adhan audio enabled');
+                
+                // Try to unlock immediately if user clicked
+                audio.muted = true; 
+                audio.play().then(() => { audio.pause(); audio.currentTime=0; audio.muted=false; });
             } else {
+                // Disable
                 audioEnabled = false;
                 audio.pause();
                 audio.currentTime = 0;
                 btn.classList.remove('enabled');
                 offIcon.style.display = 'block';
                 onIcon.style.display = 'none';
+                showToast('Adhan audio disabled');
             }
         }
 
@@ -315,7 +397,14 @@
             if (audioEnabled) {
                 const audio = document.getElementById('adhanAudio');
                 audio.currentTime = 0;
-                audio.play();
+                const playPromise = audio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Autoplay blocked:", error);
+                        showToast("Tap to play Adhan (Autoplay blocked)");
+                    });
+                }
             }
             showToast("It's time for " + prayerName);
         }

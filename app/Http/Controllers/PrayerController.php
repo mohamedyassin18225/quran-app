@@ -7,18 +7,21 @@ use Illuminate\Support\Facades\Http;
 
 class PrayerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Default location: Cairo, Egypt
         $city = 'Cairo';
         $country = 'Egypt';
+
+        // Get method from Cookie or default to 5 (Egyptian)
+        $method = $request->cookie('prayer_method', 5);
 
         // Method 5: Egyptian General Authority of Survey
         // You can change the method index based on preference: https://aladhan.com/prayer-times-api#methods
         $response = Http::get('http://api.aladhan.com/v1/timingsByCity', [
             'city' => $city,
             'country' => $country,
-            'method' => 5,
+            'method' => $method,
         ]);
 
         $data = $response->json();
@@ -79,5 +82,45 @@ class PrayerController extends Controller
     public function tajweed()
     {
         return view('tajweed');
+    }
+
+    public function tasbih()
+    {
+        return view('tasbih');
+    }
+
+    public function names()
+    {
+        // Fetch 99 Names from Aladhan API
+        $response = Http::get('http://api.aladhan.com/v1/asmaAlHusna');
+        $names = $response->successful() ? $response->json()['data'] : [];
+        return view('names', ['names' => $names]);
+    }
+
+    public function hijri(Request $request)
+    {
+        $date = $request->input('date');
+        $conversionResult = null;
+
+        if ($date) {
+            // Format date DD-MM-YYYY for API
+            $formattedDate = date('d-m-Y', strtotime($date));
+            $response = Http::get("http://api.aladhan.com/v1/gToH/$formattedDate");
+            if ($response->successful()) {
+                $conversionResult = $response->json()['data'];
+            }
+        }
+
+        return view('hijri', ['conversionResult' => $conversionResult]);
+    }
+
+    public function qibla()
+    {
+        return view('qibla');
+    }
+
+    public function settings()
+    {
+        return view('settings');
     }
 }
