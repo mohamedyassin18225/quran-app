@@ -57,11 +57,15 @@ class PrayerController extends Controller
             $timings = $data['data']['timings'];
             $date = $data['data']['date'];
 
-            // Store lat/lng in cookie if passed via query to persist it
+            // Store lat/lng/city in cookie if passed via query to persist it
             if ($request->query('lat') && $request->query('lng')) {
                 // Laravel cookies (queued for response)
                 cookie()->queue(cookie()->forever('lat', $lat));
                 cookie()->queue(cookie()->forever('lng', $lng));
+
+                if ($request->query('city')) {
+                    cookie()->queue(cookie()->forever('city_name', $request->query('city')));
+                }
             }
 
             return view('prayers', [
