@@ -497,17 +497,29 @@
 
         function requestLocation() {
             if (navigator.geolocation) {
-                // Show loading state if desired
-                document.querySelector('.location').innerHTML = '...جارِ تحديد الموقع';  navigator.geolocation.getCurrentPosition(
-                    (position) => {
+                document.querySelector('.location').innerHTML = '...جارِ تحديد الموقع';
+                
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
-                        // Reload with coordinates
-                        window.location.href = `/?lat=${lat}&lng=${lng}`;
+                        let city = '';
+
+                        try {
+                            const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=ar`);
+                            const data = await response.json();
+                            city = data.city || data.locality || data.principalSubdivision || '';
+                        } catch (e) {
+                            console.error("Geocoding failed", e);
+                        }
+
+                        // Reload with coordinates and city
+                        const url = `/?lat=${lat}&lng=${lng}` + (city ? `&city=${encodeURIComponent(city)}` : '');
+                        window.location.href = url;
                     },
                     (error) => {
                         alert('تعذر الوصول إلى الموقع. يرجى تفعيل GPS.');
-                        location.reload(); // Reset text
+                        location.reload(); 
                     }
                 );
             } else {

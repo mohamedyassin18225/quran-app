@@ -24,16 +24,18 @@ class PrayerController extends Controller
                 'method' => $method,
             ]);
 
-            // Try to extract city from timezone (e.g. "Africa/Cairo" -> "Cairo")
-            $locationLabel = "موقعي الحالي"; // Default
-            if ($response->successful()) {
+            // Use City param if available, otherwise try timezone, otherwise generic
+            $cityParam = $request->query('city') ?? $request->cookie('city_name');
+            $locationLabel = "موقعي الحالي";
+
+            if ($cityParam) {
+                $locationLabel = $cityParam;
+            } elseif ($response->successful()) {
                 $json = $response->json();
                 if (isset($json['data']['meta']['timezone'])) {
                     $timezone = $json['data']['meta']['timezone'];
-                    // Get text after last / and replace _ with space
                     $parts = explode('/', $timezone);
-                    $city = end($parts);
-                    $locationLabel = str_replace('_', ' ', $city);
+                    $locationLabel = str_replace('_', ' ', end($parts));
                 }
             }
         } else {
