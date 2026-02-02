@@ -13,6 +13,7 @@
     <link rel="icon" type="image/png" href="/icon.png">
     <link rel="apple-touch-icon" href="/icon.png">
     <meta name="theme-color" content="#1e293b">
+    <script src="/js/theme.js"></script>
     <style>
         :root {
             --primary: #1e293b;
@@ -498,7 +499,7 @@
         function requestLocation() {
             if (navigator.geolocation) {
                 document.querySelector('.location').innerHTML = '...جارِ تحديد الموقع';
-                
+
                 navigator.geolocation.getCurrentPosition(
                     async (position) => {
                         const lat = position.coords.latitude;
@@ -519,7 +520,7 @@
                     },
                     (error) => {
                         alert('تعذر الوصول إلى الموقع. يرجى تفعيل GPS.');
-                        location.reload(); 
+                        location.reload();
                     }
                 );
             } else {
@@ -529,6 +530,42 @@
 
         setInterval(updateTime, 1000);
         updateTime();
+    </script>
+    <div id="reminder-banner"
+        style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--accent); color:#0f172a; padding:15px 25px; border-radius:30px; box-shadow:0 10px 25px rgba(0,0,0,0.5); z-index:100; cursor:pointer; font-weight:bold; width: 90%; max-width: 400px; text-align: center;">
+        <span id="reminder-text">🔔 لا تنس أذكار الصباح</span>
+    </div>
+
+    <script>
+        function checkReminders() {
+            const now = new Date();
+            const hour = now.getHours();
+            const today = now.toISOString().split('T')[0];
+            const banner = document.getElementById('reminder-banner');
+            const text = document.getElementById('reminder-text');
+
+            let type = null;
+            // Morning: 5 AM - 11 AM
+            if (hour >= 5 && hour < 11) type = 'morning';
+            // Evening: 3 PM - 9 PM
+            else if (hour >= 15 && hour < 21) type = 'evening';
+
+            if (!type) return;
+
+            const key = `saw_${type}_athkar_${today}`;
+            if (!localStorage.getItem(key)) {
+                text.innerText = type === 'morning' ? '🔔 لا تنس أذكار الصباح' : '🔔 لا تنس أذكار المساء';
+                banner.style.display = 'block';
+
+                banner.onclick = () => {
+                    localStorage.setItem(key, 'true');
+                    window.location.href = `/athkar?tab=${type}`;
+                };
+            }
+        }
+
+        setInterval(checkReminders, 60000); // Check every minute
+        checkReminders(); // Check immediately
     </script>
 </body>
 

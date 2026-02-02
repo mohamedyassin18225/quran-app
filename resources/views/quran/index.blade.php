@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Holy Quran | Select Surah</title>
+    <title>القرآن الكريم | اختر السورة</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Amiri:wght@400;700&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap"
         rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e293b">
     <style>
         :root {
             --primary: #1e293b;
@@ -21,12 +24,13 @@
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Cairo', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
             color: var(--text-light);
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            text-align: right;
         }
 
         .container {
@@ -42,7 +46,7 @@
 
         .back-btn {
             position: absolute;
-            left: 0;
+            right: 0;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-dim);
@@ -59,7 +63,7 @@
         }
 
         h1 {
-            font-weight: 600;
+            font-weight: 700;
             margin: 0;
             font-size: 2rem;
         }
@@ -115,20 +119,16 @@
             flex-direction: column;
         }
 
-        .english-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .translation {
-            font-size: 0.85rem;
-            color: var(--text-dim);
-        }
-
         .arabic-name {
             font-family: 'Amiri', serif;
             font-size: 1.5rem;
             color: #e2e8f0;
+            font-weight: 700;
+        }
+
+        .verses-count {
+            font-size: 0.85rem;
+            color: var(--text-dim);
         }
     </style>
 </head>
@@ -138,15 +138,41 @@
     <div class="container">
         <div class="header">
             <a href="/" class="back-btn">
+                <span>الرئيسية</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
                     <polyline points="12 19 5 12 12 5"></polyline>
                 </svg>
-                Home
             </a>
-            <h1>Holy Quran</h1>
+            <h1>القرآن الكريم</h1>
+            <div id="resume-container" style="display:none; margin-top:20px;">
+                <a id="resume-btn" href="#" style="background: var(--accent); color: #0f172a; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px;">
+                    <span>🔖 تابع القراءة: </span>
+                    <span id="resume-text"></span>
+                </a>
+            </div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const saved = localStorage.getItem('khatma_bookmark');
+                if (saved) {
+                    try {
+                        const data = JSON.parse(saved);
+                        if (data && data.surah && data.ayah) {
+                            const container = document.getElementById('resume-container');
+                            const btn = document.getElementById('resume-btn');
+                            const text = document.getElementById('resume-text');
+                            
+                            text.innerText = `${data.name} - آية ${data.ayah}`;
+                            btn.href = `/quran/${data.surah}#ayah-${data.ayah}`;
+                            container.style.display = 'block';
+                        }
+                    } catch(e) { console.error("Bookmark parse error", e); }
+                }
+            });
+        </script>
 
         <div class="surah-grid">
             @foreach($surahs as $surah)
@@ -154,11 +180,12 @@
                     <div class="surah-info">
                         <div class="surah-number">{{ $surah['number'] }}</div>
                         <div class="surah-names">
-                            <span class="english-name">{{ $surah['englishName'] }}</span>
-                            <span class="translation">{{ $surah['englishNameTranslation'] }}</span>
+                            <!-- Helper to clean name if it has "Surah" prefix, although 'name' usually has it in Arabic -->
+                            <div class="arabic-name">{{ $surah['name'] }}</div>
+                            <div class="verses-count">{{ $surah['numberOfAyahs'] }} آية •
+                                {{ $surah['revelationType'] === 'Meccan' ? 'مكية' : 'مدنية' }}</div>
                         </div>
                     </div>
-                    <div class="arabic-name">{{ $surah['name'] }}</div>
                 </a>
             @endforeach
         </div>

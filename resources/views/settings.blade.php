@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1e293b">
+    <script src="/js/theme.js"></script>
 
     <style>
         :root {
@@ -143,6 +144,13 @@
                 الافتراضي هو الهيئة المصرية العامة للمساحة.
             </p>
 
+            <label for="theme" style="margin-top: 25px;">لون التطبيق</label>
+            <select id="theme">
+                <option value="default">الوضع الليلي (الافتراضي)</option>
+                <option value="emerald">الزمردي (أخضر)</option>
+                <option value="gold">الذهبي (بني)</option>
+            </select>
+
             <button class="btn-save" onclick="saveSettings()">حفظ التغييرات</button>
         </div>
     </div>
@@ -158,11 +166,21 @@
         const currentMethod = getCookie('prayer_method') || '5';
         document.getElementById('method').value = currentMethod;
 
-        function saveSettings() {
-            const select = document.getElementById('method');
-            const method = select.value;
+        // Set initial theme value
+        const currentTheme = localStorage.getItem('app_theme') || 'default';
+        document.getElementById('theme').value = currentTheme;
 
-            // Set cookie for 1 year
+        function saveSettings() {
+            const selectMethod = document.getElementById('method');
+            const method = selectMethod.value;
+            
+            const selectTheme = document.getElementById('theme');
+            const theme = selectTheme.value;
+
+            // Save Theme
+            localStorage.setItem('app_theme', theme);
+
+            // Save Method Cookie
             const d = new Date();
             d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
             let expires = "expires=" + d.toUTCString();

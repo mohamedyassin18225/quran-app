@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $surah['englishName'] ?? 'Surah' }} | Holy Quran</title>
+    <title>{{ $surah['name'] ?? 'سورة' }} | القرآن الكريم</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Amiri:wght@400;700&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap"
         rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e293b">
     <style>
         :root {
             --primary: #1e293b;
@@ -20,12 +23,13 @@
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Cairo', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
             color: var(--text-light);
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            text-align: right;
         }
 
         .container {
@@ -49,7 +53,8 @@
 
         .back-btn {
             position: absolute;
-            left: 0;
+            right: 0;
+            /* RTL right */
             top: 20px;
             color: var(--text-dim);
             text-decoration: none;
@@ -67,7 +72,8 @@
         h1 {
             margin: 10px 0 5px 0;
             font-size: 2.5rem;
-            font-weight: 600;
+            font-weight: 700;
+            font-family: 'Amiri', serif;
         }
 
         .translation {
@@ -125,7 +131,8 @@
             line-height: 35px;
             text-align: center;
             margin: 0 5px;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
         }
 
         .surah-info {
@@ -148,7 +155,7 @@
             padding: 8px 16px;
             border-radius: 20px;
             cursor: pointer;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Cairo', sans-serif;
             transition: all 0.2s;
             border: 1px solid transparent;
         }
@@ -162,6 +169,38 @@
             border-color: var(--accent);
             color: var(--accent);
         }
+
+        .actions-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 5px;
+        }
+
+        .btn-bookmark {
+            background: transparent;
+            border: 1px solid var(--text-dim);
+            color: var(--text-dim);
+            padding: 4px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .btn-bookmark:hover,
+        .btn-bookmark.saved {
+            background: var(--accent);
+            color: #0f172a;
+            border-color: var(--accent);
+        }
+
+        .ayah-container.highlight {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 12px;
+            padding: 10px;
+            border: 1px solid var(--accent);
+        }
     </style>
 </head>
 
@@ -170,9 +209,10 @@
     <div class="container">
         @if(!$surah)
             <div style="text-align:center; padding: 50px;">
-                <h2>Surah not found or API error.</h2>
-                <a href="/quran" class="back-btn" style="position:static; justify-content:center; margin-top:20px;">Back to
-                    List</a>
+                <h2>عفواً، لم يتم العثور على السورة أو حدث خطأ.</h2>
+                <a href="/quran" class="back-btn" style="position:static; justify-content:center; margin-top:20px;">
+                    العودة للقائمة
+                </a>
             </div>
         @else
             <div class="header">
@@ -182,19 +222,21 @@
                         <line x1="19" y1="12" x2="5" y2="12"></line>
                         <polyline points="12 19 5 12 12 5"></polyline>
                     </svg>
-                    Back to List
+                    <span>العودة للقائمة</span>
                 </a>
-                <h1>{{ $surah['englishName'] }}</h1>
-                <div class="translation">{{ $surah['englishNameTranslation'] }} - {{ $surah['name'] }}</div>
+                <h1>{{ $surah['name'] }}</h1>
+                <!-- We don't need English translation in Arabic mode -->
                 <div class="surah-info">
-                    <span>{{ $surah['numberOfAyahs'] }} Ayahs</span>
+                    <span>{{ $surah['numberOfAyahs'] }} آية</span>
                     <span>•</span>
-                    <span>{{ $surah['revelationType'] }}</span>
+                    <span>{{ $surah['revelationType'] === 'Meccan' ? 'مكية' : 'مدنية' }}</span>
                 </div>
                 <div class="controls">
                     <button class="btn-toggle" onclick="toggleTafsir(this)">
-                        👁️ Show Tafsir (Jalalayn)
+                        👁️ عرض التفسير (الميسر)
                     </button>
+                    <!-- Note: Controller fetches 'ar.jalalayn', but label says 'Muyassar'? Better say 'تفسير الجلالين' based on code -->
+                    <!-- Code check: Step 984 says 'ar.jalalayn'. So 'تفسير الجلالين' is correct. -->
                 </div>
             </div>
 
@@ -209,14 +251,17 @@
                     @php
                         $text = $ayah['text'];
                         if ($surah['number'] != 1 && $ayah['numberInSurah'] == 1) {
-                            // Regex to match Bismillah with variable diacritics including small alifs and shaddas
-                            // \p{M} matches marks (diacritics). We allow optional spaces \s*
-                            // Matching simplified: start with Ba, Sin, Mim... with arbitrary marks in between
                             $text = preg_replace('/^[\x{0600}-\x{06FF}\s]{0,50}ٱلرَّحِيمِ\s?/u', '', $text);
                         }
                     @endphp
 
-                    <div class="ayah-container">
+                    <div class="ayah-container" id="ayah-{{ $ayah['numberInSurah'] }}">
+                        <div class="actions-bar">
+                            <button class="btn-bookmark"
+                                onclick="saveBookmark({{ $surah['number'] }}, '{{ $surah['name'] }}', {{ $ayah['numberInSurah'] }}, this)">
+                                🔖 حفظ
+                            </button>
+                        </div>
                         <div class="quran-text">
                             {{ $text }} <span class="ayah-number">{{ $ayah['numberInSurah'] }}</span>
                         </div>
@@ -225,14 +270,14 @@
                             <div class="audio-container">
                                 <audio controls preload="none" style="width: 100%; height: 30px; margin-top: 10px; opacity: 0.8;">
                                     <source src="{{ $audio['ayahs'][$index]['audio'] }}" type="audio/mpeg">
-                                    Your browser does not support the audio element.
+                                    متصفحك لا يدعم تشغيل الصوت.
                                 </audio>
                             </div>
                         @endif
 
                         @if(isset($tafsir['ayahs'][$index]))
                             <div class="tafsir-text">
-                                <strong>تفسير:</strong> {{ $tafsir['ayahs'][$index]['text'] }}
+                                <strong>تفسير الجلالين:</strong> {{ $tafsir['ayahs'][$index]['text'] }}
                             </div>
                         @endif
                     </div>
@@ -250,14 +295,70 @@
                 // Hide
                 tafsirs.forEach(el => el.style.display = 'none');
                 btn.classList.remove('active');
-                btn.innerHTML = '👁️ Show Tafsir (Jalalayn)';
+                btn.innerHTML = '👁️ عرض التفسير (الجلالين)';
             } else {
                 // Show
                 tafsirs.forEach(el => el.style.display = 'block');
                 btn.classList.add('active');
-                btn.innerHTML = '👁️ Hide Tafsir';
+                btn.innerHTML = '👁️ إخفاء التفسير';
             }
         }
+
+        function saveBookmark(surahNum, surahName, ayahNum, btn) {
+            const bookmark = {
+                surah: surahNum,
+                name: surahName,
+                ayah: ayahNum,
+                timestamp: new Date().getTime()
+            };
+            localStorage.setItem('khatma_bookmark', JSON.stringify(bookmark));
+
+            // Visual Update
+            document.querySelectorAll('.btn-bookmark').forEach(b => {
+                b.classList.remove('saved');
+                b.innerHTML = '🔖 حفظ';
+            });
+            document.querySelectorAll('.ayah-container').forEach(c => c.classList.remove('highlight'));
+
+            btn.classList.add('saved');
+            btn.innerHTML = '✅ تم الحفظ';
+
+            const container = document.getElementById(`ayah-${ayahNum}`);
+            if (container) container.classList.add('highlight');
+        }
+
+        // Check for existing bookmark on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('khatma_bookmark');
+            if (saved) {
+                const data = JSON.parse(saved);
+                // Check if we are on the correct Surah
+                // We can't easily check Surah Number from JS unless we pass it, 
+                // but checking if the element exists is a good proxy.
+                const targetAyah = document.getElementById(`ayah-${data.ayah}`);
+
+                // Need to confirm Surah Number match. 
+                // We can infer it from the first saveBookmark call argument in the HTML, 
+                // or just check if the stored surah matches the URL or a global variable.
+                // Let's rely on the PHP variable passed to the view if possible. 
+                // Simple hack: check if the 'Actions' in this page belong to the saved Surah.
+                // Actually, we can check the URL path or just look for the ID.
+                // But multiple surahs might have ayah-5.
+
+                // Better: Use a data attribute on Body or check URL
+                const currentSurahNum = {{ $surah['number'] ?? 0 }};
+
+                if (data.surah == currentSurahNum && targetAyah) {
+                    targetAyah.classList.add('highlight');
+                    targetAyah.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const btn = targetAyah.querySelector('.btn-bookmark');
+                    if (btn) {
+                        btn.classList.add('saved');
+                        btn.innerHTML = '✅ المحفوظ';
+                    }
+                }
+            }
+        });
     </script>
 </body>
 

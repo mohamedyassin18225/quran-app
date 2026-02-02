@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rules of Tajweed</title>
+    <title>أحكام التجويد | تطبيق الصلاة</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Amiri:wght@400;700&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap"
         rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e293b">
     <style>
         :root {
             --primary: #1e293b;
@@ -21,7 +24,7 @@
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Cairo', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
             color: var(--text-light);
             min-height: 100vh;
@@ -30,6 +33,7 @@
             justify-content: center;
             margin: 0;
             padding: 20px;
+            text-align: right;
         }
 
         .container {
@@ -52,7 +56,7 @@
 
         .back-btn {
             position: absolute;
-            left: 0;
+            right: 0;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-dim);
@@ -70,9 +74,9 @@
 
         h1 {
             margin: 0;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 2rem;
-            letter-spacing: 1px;
+            letter-spacing: 0;
         }
 
         .rule-section {
@@ -87,15 +91,16 @@
             color: var(--accent);
             font-size: 1.4rem;
             margin-bottom: 15px;
-            font-weight: 600;
+            font-weight: 700;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 10px;
         }
 
         .rule-description {
             color: var(--text-light);
-            line-height: 1.6;
+            line-height: 1.8;
             margin-bottom: 15px;
+            font-size: 1.1rem;
         }
 
         .example-box {
@@ -103,7 +108,7 @@
             padding: 15px;
             border-radius: 8px;
             border-right: 4px solid var(--accent);
-            direction: rtl;
+            /* RTL Right Border is logical start */
         }
 
         .arabic-example {
@@ -114,10 +119,9 @@
         }
 
         .example-note {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--text-dim);
-            direction: ltr;
-            text-align: left;
+            text-align: right;
         }
     </style>
 </head>
@@ -127,102 +131,96 @@
     <div class="container">
         <div class="header">
             <a href="/" class="back-btn">
+                <span>الرئيسية</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
                     <polyline points="12 19 5 12 12 5"></polyline>
                 </svg>
-                Home
             </a>
-            <h1>Rules of Tajweed</h1>
+            <h1>أحكام التجويد</h1>
         </div>
 
         <div class="rule-section">
-            <div class="rule-title">1. Noon Sakinah & Tanween</div>
+            <div class="rule-title">1. أحكام النون الساكنة والتنوين</div>
             <div class="rule-description">
-                Rules applied when a Noon with Sukoon (نْ) or Tanween (ً ٍ ٌ) is followed by specific letters.
+                تطبق هذه الأحكام عندما تأتي النون الساكنة (نْ) أو التنوين (ً ٍ ٌ) قبل أحرف معينة.
             </div>
 
             <div style="margin-bottom: 20px;">
-                <strong style="color: #e2e8f0;">A. Izhar (Clarity):</strong> Pronouncing the Noon clearly without
-                Ghunna. <br>
-                <em>Letters:</em> ء هـ ع ح غ خ
+                <strong style="color: #e2e8f0;">أ. الإظهار:</strong> نطق النون بوضوح بدون غنة.<br>
+                <em>حروفه:</em> ء هـ ع ح غ خ
                 <div class="example-box">
                     <div class="arabic-example">مَنْ آمَنَ</div>
-                    <div class="example-note">Man Aamana (Clear 'N' sound)</div>
+                    <div class="example-note">تنطق النون بوضوح تام.</div>
                 </div>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <strong style="color: #e2e8f0;">B. Idgham (Merging):</strong> Merging the Noon into the following
-                letter. <br>
-                <em>Letters:</em> ي ر م ل و ن (Yarmaloon)
+                <strong style="color: #e2e8f0;">ب. الإدغام:</strong> إدخال النون في الحرف الذي يليها.<br>
+                <em>حروفه:</em> ي ر م ل و ن (يرملون)
                 <div class="example-box">
                     <div class="arabic-example">مَن يَّقُولُ</div>
-                    <div class="example-note">May-yaqoolu (Noon merged into Ya)</div>
+                    <div class="example-note">تتحول النون إلى ياء مشددة مع الغنة.</div>
                 </div>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <strong style="color: #e2e8f0;">C. Iqlab (Conversion):</strong> Changing Noon to Meem when followed by
-                Ba (ب).
+                <strong style="color: #e2e8f0;">ج. الإقلاب:</strong> قلب النون ميماً عند ملاقاة الباء.<br>
                 <div class="example-box">
                     <div class="arabic-example">مِنۢ بَعْدِ</div>
-                    <div class="example-note">Mim-ba'di (Pronounced like a Meem)</div>
+                    <div class="example-note">تُنطق النون ميماً مخفاة.</div>
                 </div>
             </div>
 
             <div>
-                <strong style="color: #e2e8f0;">D. Ikhfa (Hiding):</strong> Hiding the Noon sound with a Ghunna (nasal
-                sound). <br>
-                <em>Letters:</em> Remaining 15 letters (e.g., ت ث ج د).
+                <strong style="color: #e2e8f0;">د. الإخفاء:</strong> ستر النون وإخراج غنة من الخيشوم.<br>
+                <em>حروفه:</em> باقي الحروف (مثل: ت ث ج د...).
                 <div class="example-box">
                     <div class="arabic-example">مِن تَحْتِهَا</div>
-                    <div class="example-note">Min... tahtiha (Nasal sound, tongue not touching roof)</div>
+                    <div class="example-note">يُخفى صوت النون عند التاء.</div>
                 </div>
             </div>
         </div>
 
         <div class="rule-section">
-            <div class="rule-title">2. Meem Sakinah</div>
+            <div class="rule-title">2. أحكام الميم الساكنة</div>
             <div class="rule-description">
-                Rules applied to Meem with Sukoon (مْ).
+                الأحكام المطبقة على الميم الساكنة (مْ).
             </div>
 
             <div style="margin-bottom: 20px;">
-                <strong style="color: #e2e8f0;">A. Ikhfa Shafawi:</strong> Followed by Ba (ب). Hide Meem with Ghunna.
+                <strong style="color: #e2e8f0;">أ. الإخفاء الشفوي:</strong> تأتي بعده باء (ب). تخفى الميم مع الغنة.
                 <div class="example-box">
                     <div class="arabic-example">تَرْمِيهِم بِحِجَارَةٍ</div>
-                    <div class="example-note">Tarmeehim-bihijarah</div>
                 </div>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <strong style="color: #e2e8f0;">B. Idgham Shafawi:</strong> Followed by Meem (م). Merge with Ghunna.
+                <strong style="color: #e2e8f0;">ب. الإدغام الشفوي (المتماثلين):</strong> يأتي بعده ميم (م).
                 <div class="example-box">
                     <div class="arabic-example">لَهُم مَّا</div>
-                    <div class="example-note">Lahum-ma</div>
                 </div>
             </div>
 
             <div>
-                <strong style="color: #e2e8f0;">B. Izhar Shafawi:</strong> Followed by any other letter. Clear Meem.
+                <strong style="color: #e2e8f0;">ج. الإظهار الشفوي:</strong> يأتي بعده أي حرف آخر.
                 <div class="example-box">
                     <div class="arabic-example">هُمْ فِيهَا</div>
-                    <div class="example-note">Hum Feeha (Clear Meem)</div>
+                    <div class="example-note">يجب الحذر من إخفاء الميم عند الفاء أو الواو.</div>
                 </div>
             </div>
         </div>
 
         <div class="rule-section">
-            <div class="rule-title">3. Qalqalah (Echoing)</div>
+            <div class="rule-title">3. القلقلة</div>
             <div class="rule-description">
-                Creating an echoing sound when these letters have Sukoon (or stopping on them).
-                <br><em>Letters:</em> ق ط ب ج د (Qutb Jad)
+                اضطراب الصوت عند النطق بالحرف ساكناً.
+                <br><em>حروفها:</em> ق ط ب ج د (قطب جد)
             </div>
             <div class="example-box">
                 <div class="arabic-example">قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ</div>
-                <div class="example-note">Falaq (Echo the Qaf sound at the end)</div>
+                <div class="example-note">اهتزاز مخرج القاف عند الوقف.</div>
             </div>
         </div>
 
