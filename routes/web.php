@@ -12,3 +12,5 @@ Route::get('/names', [App\Http\Controllers\PrayerController::class, 'names']);
 Route::get('/hijri', [App\Http\Controllers\PrayerController::class, 'hijri']);
 Route::get('/qibla', [App\Http\Controllers\PrayerController::class, 'qibla']);
 Route::get('/settings', [App\Http\Controllers\PrayerController::class, 'settings']);
+Route::get('/zakat', [App\Http\Controllers\PrayerController::class, 'zakat']);
+Route::get('/calendar', [App\Http\Controllers\PrayerController::class, 'calendar']);

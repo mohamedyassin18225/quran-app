@@ -184,9 +184,12 @@
             <h1>الأذكار</h1>
         </div>
 
-        <div class="tabs">
+        <div class="tabs" style="flex-wrap: wrap; gap: 10px;">
             <button class="tab-btn active" onclick="switchTab('morning')">أذكار الصباح</button>
             <button class="tab-btn" onclick="switchTab('evening')">أذكار المساء</button>
+            <button class="tab-btn" onclick="switchTab('travel')">السفر</button>
+            <button class="tab-btn" onclick="switchTab('distress')">الكرب</button>
+            <button class="tab-btn" onclick="switchTab('home')">المنزل</button>
         </div>
 
         <!-- Morning Athkar -->
@@ -374,6 +377,67 @@
                     <span>رواه الحاكم</span>
                     <span class="count">مرة واحدة</span>
                 </div>
+
+                <!-- Travel Athkar -->
+                <div id="travel" class="athkar-list">
+                    <div class="thikr-card">
+                        <div class="arabic-text">سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ *
+                            وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ</div>
+                        <div class="meta">
+                            <span>دعاء ركوب الدابة</span>
+                            <span class="count">مرة واحدة</span>
+                        </div>
+                    </div>
+                    <div class="thikr-card">
+                        <div class="arabic-text">اللَّهُمَّ إِنَّا نَسْأَلُكَ فِي سَفَرِنَا هَذَا الْبِرَّ وَالتَّقْوَى،
+                            وَمِنَ الْعَمَلِ مَا تَرْضَى، اللَّهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَذَا، وَاطْوِ عَنَّا
+                            بُعْدَهُ...</div>
+                        <div class="meta">
+                            <span>دعاء السفر</span>
+                            <span class="count">مرة واحدة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Distress Athkar -->
+                <div id="distress" class="athkar-list">
+                    <div class="thikr-card">
+                        <div class="arabic-text">لَا إِلَهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ، لَا إِلَهَ إِلَّا
+                            اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ، لَا إِلَهَ إِلَّا اللَّهُ رَبُّ السَّمَاوَاتِ وَرَبُّ
+                            الْأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ</div>
+                        <div class="meta">
+                            <span>دعاء الكرب</span>
+                            <span class="count">مرة واحدة</span>
+                        </div>
+                    </div>
+                    <div class="thikr-card">
+                        <div class="arabic-text">يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ</div>
+                        <div class="meta">
+                            <span>عند الشدة</span>
+                            <span class="count">مرة واحدة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Home Athkar -->
+                <div id="home" class="athkar-list">
+                    <div class="thikr-card">
+                        <div class="arabic-text">بِسْمِ اللهِ وَلَجْنَا، وَبِسْمِ اللهِ خَرَجْنَا، وَعَلَى رَبِّنَا
+                            تَوَكَّلْنَا</div>
+                        <div class="meta">
+                            <span>عند دخول المنزل</span>
+                            <span class="count">مرة واحدة</span>
+                        </div>
+                    </div>
+                    <div class="thikr-card">
+                        <div class="arabic-text">بِسْمِ اللَّهِ، تَوَكَّلْتُ عَلَى اللَّهِ، وَلَا حَوْلَ وَلَا قُوَّةَ
+                            إِلَّا بِاللَّهِ</div>
+                        <div class="meta">
+                            <span>عند الخروج من المنزل</span>
+                            <span class="count">مرة واحدة</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -385,12 +449,12 @@
             // Update buttons
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             const btn = document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`);
-            if(btn) btn.classList.add('active');
+            if (btn) btn.classList.add('active');
 
             // Update lists
             document.querySelectorAll('.athkar-list').forEach(list => list.classList.remove('active'));
             const target = document.getElementById(tab);
-            if(target) target.classList.add('active');
+            if (target) target.classList.add('active');
         }
 
         // Check URL param on load

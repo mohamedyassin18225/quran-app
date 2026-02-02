@@ -332,6 +332,14 @@
                     <div class="tool-icon">📘</div>
                     <div class="tool-name">التجويد</div>
                 </a>
+                <a href="/zakat" class="tool-item">
+                    <div class="tool-icon">💰</div>
+                    <div class="tool-name">الزكاة</div>
+                </a>
+                <a href="/calendar" class="tool-item">
+                    <div class="tool-icon">📅</div>
+                    <div class="tool-name">المناسبات</div>
+                </a>
                 <a href="/settings" class="tool-item">
                     <div class="tool-icon">⚙️</div>
                     <div class="tool-name">الإعدادات</div>

@@ -161,4 +161,41 @@ class PrayerController extends Controller
     {
         return view('settings');
     }
+
+    public function zakat()
+    {
+        return view('zakat');
+    }
+
+    public function calendar()
+    {
+        // Simple manual list of key Islamic dates (Hijri)
+        // 1 Muharram: Islamic New Year
+        // 10 Muharram: Ashura
+        // 12 Rabi Al-Awwal: Mawlid
+        // 27 Rajab: Isra Wal Miraj
+        // 15 Shaban: Mid-Shaban
+        // 1 Ramadan: Start of Fasting
+        // 1 Shawwal: Eid Al-Fitr
+        // 9 Dhul Hijjah: Arafat
+        // 10 Dhul Hijjah: Eid Al-Adha
+
+        $events = [
+            ['month' => 1, 'day' => 1, 'name' => 'رأس السنة الهجرية'],
+            ['month' => 1, 'day' => 10, 'name' => 'يوم عاشوراء'],
+            ['month' => 3, 'day' => 12, 'name' => 'المولد النبوي الشريف'],
+            ['month' => 7, 'day' => 27, 'name' => 'الإسراء والمعراج'],
+            ['month' => 8, 'day' => 15, 'name' => 'ليلة النصف من شعبان'],
+            ['month' => 9, 'day' => 1, 'name' => 'بداية شهر رمضان'],
+            ['month' => 10, 'day' => 1, 'name' => 'عيد الفطر المبارك'],
+            ['month' => 12, 'day' => 9, 'name' => 'يوم عرفة'],
+            ['month' => 12, 'day' => 10, 'name' => 'عيد الأضحى المبارك'],
+        ];
+
+        // Get current Hijri date to show "Next Event"
+        // We rely on client-side or simple API fetch in view for current date, 
+        // or just render the static list for now.
+
+        return view('calendar', ['events' => $events]);
+    }
 }
