@@ -18,13 +18,16 @@
             --primary: #1e293b;
             --secondary: #334155;
             --accent: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.3);
             --text-light: #f8fafc;
             --text-dim: #94a3b8;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --border-light: rgba(255, 255, 255, 0.05);
         }
 
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--primary);
+            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
             color: var(--text-light);
             margin: 0;
             padding: 20px;
@@ -33,6 +36,7 @@
             align-items: center;
             min-height: 100vh;
             text-align: right;
+            background-attachment: fixed;
         }
 
         .container {
@@ -40,171 +44,238 @@
             max-width: 500px;
         }
 
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
         .header h1 {
             font-weight: 700;
-            margin-bottom: 5px;
-            text-align: center;
+            margin: 0;
+            font-size: 2rem;
+            color: var(--accent);
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .back-link {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
         }
 
         .section {
-            background: var(--secondary);
-            border-radius: 16px;
-            padding: 24px;
-            margin-top: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
         }
 
         label {
             display: block;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             font-weight: 600;
-            color: var(--text-dim);
+            color: var(--text-light);
+            font-size: 0.95rem;
         }
 
         select {
             width: 100%;
-            padding: 16px;
+            padding: 15px;
             border-radius: 12px;
             border: 1px solid #475569;
-            background: #1e293b;
+            background: #0f172a;
             color: white;
             font-family: inherit;
-            font-size: 1rem;
+            font-size: 0.95rem;
             appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
             background-position: left 1rem center;
-            /* Left for RTL */
-            background-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
         }
 
         .info-text {
-            margin-top: 15px;
-            font-size: 0.85rem;
+            margin-top: 10px;
+            font-size: 0.8rem;
             color: var(--text-dim);
-            line-height: 1.4;
+            line-height: 1.5;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 8px;
         }
 
         .btn-save {
-            background: var(--accent);
-            color: #0f172a;
+            background: linear-gradient(135deg, var(--accent), #059669);
+            color: #ffffff;
             border: none;
-            padding: 14px;
-            border-radius: 12px;
+            padding: 16px;
+            border-radius: 15px;
             width: 100%;
             font-weight: 700;
-            font-size: 1rem;
-            margin-top: 24px;
+            font-size: 1.1rem;
+            margin-top: 10px;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .btn-save:hover {
-            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--accent-glow);
         }
 
-        .back-link {
-            align-self: flex-end;
-            /* Right side */
-            color: var(--text-light);
-            text-decoration: none;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+        .btn-save:active {
+            transform: translateY(0);
         }
     </style>
 </head>
 
 <body>
 
-    <a href="/" class="back-link">&rarr;</a> <!-- Right arrow for back in RTL -->
-
     <div class="container">
         <div class="header">
+            <a href="/" class="back-link">&rarr; الرئيسية</a>
             <h1>الإعدادات</h1>
         </div>
 
         <div class="section">
-            <label for="method">طريقة حساب المواقيت</label>
-            <select id="method">
-                <option value="5">الهيئة المصرية العامة للمساحة</option>
-                <option value="4">جامعة أم القرى، مكة المكرمة</option>
-                <option value="3">رابطة العالم الإسلامي</option>
-                <option value="2">الجمعية الإسلامية لأمريكا الشمالية (ISNA)</option>
-                <option value="1">جامعة العلوم الإسلامية، كراتشي</option>
-                <option value="0">المذهب الشيعي الإثنا عشري (قم)</option>
-                <option value="8">منطقة الخليج</option>
-                <option value="9">الكويت</option>
-                <option value="10">قطر</option>
-                <option value="11">مجلس الشؤون الإسلامية، سنغافورة</option>
-                <option value="12">اتحاد المنظمات الإسلامية في فرنسا</option>
-                <option value="13">رئاسة الشؤون الدينية، تركيا</option>
-            </select>
+            <div class="section-title">
+                <span>🕌</span> طريقة الحساب
+            </div>
 
-            <p class="info-text">
-                تختلف طرق الحساب حسب الزوايا المعتمدة للفجر والعشاء.
-                الافتراضي هو الهيئة المصرية العامة للمساحة.
-            </p>
-
-            <label for="theme" style="margin-top: 25px;">لون التطبيق</label>
-            <select id="theme">
-                <option value="default">الوضع الليلي (الافتراضي)</option>
-                <option value="emerald">الزمردي (أخضر)</option>
-                <option value="gold">الذهبي (بني)</option>
-            </select>
-
-            <label for="hijri_adj" style="margin-top: 25px;">تعديل التاريخ الهجري (أيام)</label>
-            <select id="hijri_adj">
-                <option value="-2">-2 يوم</option>
-                <option value="-1">-1 يوم</option>
-                <option value="0" selected>0 (تلقائي)</option>
-                <option value="1">+1 يوم</option>
-                <option value="2">+2 يوم</option>
-            </select>
-
-            <button class="btn-save" onclick="saveSettings()">حفظ التغييرات</button>
+            <div class="form-group">
+                <label for="method">الجهة المعتمدة للمواقيت</label>
+                <select id="method">
+                    <option value="5">الهيئة المصرية العامة للمساحة</option>
+                    <option value="4">جامعة أم القرى، مكة المكرمة</option>
+                    <option value="3">رابطة العالم الإسلامي</option>
+                    <option value="2">ISNA (أمريكا الشمالية)</option>
+                    <option value="1">جامعة العلوم الإسلامية، كراتشي</option>
+                    <option value="8">منطقة الخليج</option>
+                    <option value="9">الكويت</option>
+                    <option value="10">قطر</option>
+                    <option value="11">سنغافورة</option>
+                    <option value="13">تركيا</option>
+                </select>
+                <div class="info-text">
+                    يؤثر هذا الخيار على موعدي أذان الفجر والعشاء.
+                </div>
+            </div>
         </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span>🎨</span> المظهر والتاريخ
+            </div>
+
+            <div class="form-group">
+                <label for="theme">لون التطبيق الأساسي</label>
+                <select id="theme">
+                    <option value="default">الليلي (الافتراضي)</option>
+                    <option value="emerald">الزمردي (أخضر داكن)</option>
+                    <option value="gold">الذهبي (ملكي)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="hijri_adj">تصحبح التاريخ الهجري</label>
+                <select id="hijri_adj">
+                    <option value="-2">-2 يوم</option>
+                    <option value="-1">-1 يوم</option>
+                    <option value="0" selected>تلقائي (0)</option>
+                    <option value="1">+1 يوم</option>
+                    <option value="2">+2 يوم</option>
+                </select>
+                <div class="info-text">
+                    استخدم هذا الخيار إذا كان التاريخ الهجري يختلف عن رؤية الهلال في بلدك.
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-save" onclick="saveSettings()">
+            <span>💾</span> حفظ الإعدادات
+        </button>
     </div>
 
     <script>
-        // Read cookie to set initial value
+        // Util
         function getCookie(name) {
             const value = `; ${document.cookie}`;
             const parts = value.split(`; ${name}=`);
             if (parts.length === 2) return parts.pop().split(';').shift();
         }
 
+        // Init Load
         const currentMethod = getCookie('prayer_method') || '5';
         document.getElementById('method').value = currentMethod;
 
-        // Set initial theme value
         const currentTheme = localStorage.getItem('app_theme') || 'default';
         document.getElementById('theme').value = currentTheme;
 
-        // Set initial offset
         const currentAdj = localStorage.getItem('hijri_offset') || '0';
         document.getElementById('hijri_adj').value = currentAdj;
 
         function saveSettings() {
-            const selectMethod = document.getElementById('method');
-            const method = selectMethod.value;
-
-            const selectTheme = document.getElementById('theme');
-            const theme = selectTheme.value;
-
-            // Save Theme
-            localStorage.setItem('app_theme', theme);
-
-            // Save Hijri Offset
+            const method = document.getElementById('method').value;
+            const theme = document.getElementById('theme').value;
             const adj = document.getElementById('hijri_adj').value;
+
+            // Save
+            localStorage.setItem('app_theme', theme);
             localStorage.setItem('hijri_offset', adj);
 
-            // Save Method Cookie
             const d = new Date();
             d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
-            let expires = "expires=" + d.toUTCString();
-            document.cookie = "prayer_method=" + method + ";" + expires + ";path=/";
+            document.cookie = `prayer_method=${method};expires=${d.toUTCString()};path=/`;
 
-            alert('تم حفظ الإعدادات!');
-            window.location.href = "/"; // Go back home
+            // Feedback
+            const btn = document.querySelector('.btn-save');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "✅ تم الحفظ بنجاح";
+            btn.style.background = "var(--secondary)";
+
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 800);
         }
     </script>
 </body>
