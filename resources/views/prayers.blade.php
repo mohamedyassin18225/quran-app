@@ -330,6 +330,14 @@
                     <div class="tool-icon">🧭</div>
                     <div class="tool-name">القبلة</div>
                 </a>
+                <a href="/mosques" class="tool-item">
+                    <div class="tool-icon">🕌</div>
+                    <div class="tool-name">المساجد</div>
+                </a>
+                <a href="/tracker" class="tool-item">
+                    <div class="tool-icon">📊</div>
+                    <div class="tool-name">سجل الصلوات</div>
+                </a>
                 <a href="/tajweed" class="tool-item">
                     <div class="tool-icon">📘</div>
                     <div class="tool-name">التجويد</div>

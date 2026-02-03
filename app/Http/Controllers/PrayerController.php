@@ -218,4 +218,14 @@ class PrayerController extends Controller
     {
         return view('ramadan');
     }
+
+    public function mosques()
+    {
+        return view('mosques');
+    }
+
+    public function tracker()
+    {
+        return view('tracker');
+    }
 }
