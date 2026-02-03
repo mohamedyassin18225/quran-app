@@ -195,8 +195,9 @@
 
         async function fetchMosques(lat, lng) {
             // Overpass API Query for mosques around 2km
+            // Increased timeout to 90 seconds to avoid 504 errors on busy servers
             const query = `
-                [out:json][timeout:25];
+                [out:json][timeout:90];
                 (
                   node["amenity"="place_of_worship"]["religion"="muslim"](around:2000, ${lat}, ${lng});
                   way["amenity"="place_of_worship"]["religion"="muslim"](around:2000, ${lat}, ${lng});
@@ -208,11 +209,18 @@
             const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
 
             try {
-                const response = await fetch(url);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 95000); // 95s client timeout
+
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
 
                 if (!response.ok) {
                     if (response.status === 429) {
                         throw new Error("تجاوزت حد الطلبات (Rate Limit). يرجى الانتظار قليلاً.");
+                    }
+                    if (response.status === 504) {
+                        throw new Error("الخادم تأخر في الاستجابة (Gateway Timeout). يرجى المحاولة مرة أخرى.");
                     }
                     throw new Error(`HTTP Error: ${response.status}`);
                 }
@@ -228,7 +236,11 @@
 
             } catch (error) {
                 console.error("Fetch Mosques Error:", error);
-                showStatus("عذراً: " + error.message);
+                let msg = error.message;
+                if (error.name === 'AbortError') {
+                    msg = "انتهت مهلة المزامنة. السيرفر بطيء جداً.";
+                }
+                showStatus("عذراً: " + msg);
             }
         }
 
