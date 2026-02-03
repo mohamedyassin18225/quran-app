@@ -15,3 +15,6 @@ Route::get('/qibla', [App\Http\Controllers\PrayerController::class, 'qibla']);
 Route::get('/settings', [App\Http\Controllers\PrayerController::class, 'settings']);
 Route::get('/zakat', [App\Http\Controllers\PrayerController::class, 'zakat']);
 Route::get('/calendar', [App\Http\Controllers\PrayerController::class, 'calendar']);
+Route::get('/hadith', [App\Http\Controllers\PrayerController::class, 'hadith']);
+Route::get('/quiz', [App\Http\Controllers\PrayerController::class, 'quiz']);
+Route::get('/ramadan', [App\Http\Controllers\PrayerController::class, 'ramadan']);

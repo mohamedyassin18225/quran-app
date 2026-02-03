@@ -342,6 +342,18 @@
                     <div class="tool-icon">📅</div>
                     <div class="tool-name">المناسبات</div>
                 </a>
+                <a href="/hadith" class="tool-item">
+                    <div class="tool-icon">📚</div>
+                    <div class="tool-name">الأحاديث</div>
+                </a>
+                <a href="/quiz" class="tool-item">
+                    <div class="tool-icon">❓</div>
+                    <div class="tool-name">المسابقات</div>
+                </a>
+                <a href="/ramadan" class="tool-item">
+                    <div class="tool-icon">🌙</div>
+                    <div class="tool-name">رمضان</div>
+                </a>
                 <a href="/settings" class="tool-item">
                     <div class="tool-icon">⚙️</div>
                     <div class="tool-name">الإعدادات</div>

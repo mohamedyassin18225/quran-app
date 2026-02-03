@@ -203,4 +203,19 @@ class PrayerController extends Controller
 
         return view('calendar', ['events' => $events]);
     }
+
+    public function hadith()
+    {
+        return view('hadith');
+    }
+
+    public function quiz()
+    {
+        return view('quiz');
+    }
+
+    public function ramadan()
+    {
+        return view('ramadan');
+    }
 }
