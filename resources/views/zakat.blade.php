@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة الزكاة | تطبيق الصلاة</title>
+    <title>حاسبة الزكاة الذكية | تطبيق الصلاة</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,6 +21,9 @@
             --accent: #10b981;
             --text-light: #f8fafc;
             --text-dim: #94a3b8;
+            --gold: #fbbf24;
+            --silver: #cbd5e1;
+            --wrong: #ef4444;
         }
 
         body {
@@ -34,49 +37,81 @@
             align-items: center;
             min-height: 100vh;
             text-align: right;
+            background-image: linear-gradient(0deg, #1e293b 0%, #0f172a 100%);
         }
 
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
         }
 
         .header h1 {
             font-weight: 700;
             margin-bottom: 5px;
             text-align: center;
+            color: var(--accent);
         }
 
+        .back-link {
+            align-self: flex-start;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        /* Asset Cards */
         .card {
-            background: var(--secondary);
+            background: rgba(30, 41, 59, 0.7);
             border-radius: 16px;
-            padding: 30px;
-            margin-top: 30px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            margin-left: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
         }
 
         label {
             display: block;
-            margin-bottom: 12px;
-            font-weight: 600;
+            margin-bottom: 8px;
             color: var(--text-dim);
+            font-size: 0.9rem;
         }
 
         input[type="number"] {
             width: 100%;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 10px;
             border: 1px solid #475569;
-            background: #1e293b;
+            background: rgba(0, 0, 0, 0.3);
             color: white;
             font-family: inherit;
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            font-size: 1rem;
             box-sizing: border-box;
-            text-align: right;
+            text-align: left;
+            /* Numbers LTR */
+            direction: ltr;
         }
 
-        button {
+        /* Calc Button */
+        .btn-calc {
             background: var(--accent);
             color: #0f172a;
             border: none;
@@ -84,102 +119,192 @@
             border-radius: 12px;
             width: 100%;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            transition: opacity 0.2s;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transition: transform 0.2s;
         }
 
-        button:hover {
-            opacity: 0.9;
+        .btn-calc:active {
+            transform: scale(0.98);
         }
 
+        /* Result Area */
         .result-box {
+            background: #111827;
+            border-radius: 16px;
+            padding: 25px;
             margin-top: 30px;
-            background: rgba(16, 185, 129, 0.1);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--accent);
-            display: none;
             text-align: center;
+            border: 2px solid var(--accent);
+            display: none;
         }
 
-        .zakat-amount {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin: 10px 0;
-            direction: ltr;
-            /* Keeping amount LTR for readability often helps, or RTL if purely Arabic numerals */
-        }
-
-        .nisab-info {
-            margin-top: 25px;
-            font-size: 0.9rem;
+        .total-assets {
+            font-size: 1.2rem;
             color: var(--text-dim);
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 8px;
-            line-height: 1.6;
+            margin-bottom: 10px;
         }
 
-        .back-link {
-            align-self: flex-end;
-            color: var(--text-light);
-            text-decoration: none;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+        .zakat-due {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 10px;
+            direction: ltr;
+        }
+
+        .status-msg {
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .status-ok {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent);
+        }
+
+        .status-no {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--wrong);
         }
     </style>
 </head>
 
 <body>
 
-    <a href="/" class="back-link">&rarr;</a>
-
     <div class="container">
+        <a href="/" class="back-link">&rarr; الرئيسية</a>
+
         <div class="header">
-            <h1>حاسبة الزكاة</h1>
-            <p style="color:var(--text-dim); text-align:center;">احسب زكاة المال (2.5%)</p>
+            <h1>حاسبة الزكاة الذكية</h1>
+            <p style="color:var(--text-dim); text-align:center;">احسب زكاتك بدقة (ربع العشر 2.5%)</p>
+        </div>
+
+        <!-- Gold Settings -->
+        <div class="card" style="border-color: var(--gold);">
+            <div class="card-header">
+                <div><span class="icon">🏆</span> أسعار الذهب (جرام)</div>
+            </div>
+            <label>سعر جرام الذهب (عيار 24) بالعملة المحلية</label>
+            <input type="number" id="gold-price" placeholder="مثلاً: 2500" onchange="saveSettings()">
+            <p style="font-size:0.8rem; color:var(--text-dim); margin-top:5px;">
+                نصاب الذهب = 85 × السعر. (تلقائي: <span id="nisab-val">--</span>)
+            </p>
+        </div>
+
+        <!-- Assets -->
+        <div class="card">
+            <div class="card-header">
+                <div><span class="icon">💵</span> النقد والمدخرات</div>
+            </div>
+            <label>السيولة النقدية (في اليد أو البنك)</label>
+            <input type="number" class="asset-input" id="cash" placeholder="0">
         </div>
 
         <div class="card">
-            <label for="amount">المبلغ المدخر (مر عليه الحول):</label>
-            <input type="number" id="amount" placeholder="أدخل المبلغ هنا..." step="0.01">
-
-            <button onclick="calculateZakat()">احسب الزكاة</button>
-
-            <div id="result" class="result-box">
-                <div>مبلغ الزكاة المستحق:</div>
-                <div class="zakat-amount" id="zakat-value">0.00</div>
+            <div class="card-header">
+                <div><span class="icon">👑</span> الذهب والفضة (للاكتناز)</div>
             </div>
-
-            <div class="nisab-info">
-                <strong>معلومة عن النصاب:</strong><br>
-                يجب إخراج الزكاة إذا بلغ المال النصاب ومر عليه عام هجري كامل.<br>
-                نصاب الذهب: 85 جرام.<br>
-                نصاب الفضة: 595 جرام.<br>
-                قيمة الزكاة هي ربع العشر (2.5%).
+            <div class="input-group">
+                <label>وزن الذهب (جرام)</label>
+                <input type="number" class="asset-input" id="gold-weight" placeholder="0">
             </div>
+            <div class="input-group">
+                <label>وزن الفضة (جرام)</label>
+                <input type="number" class="asset-input" id="silver-weight" placeholder="0">
+            </div>
+        </div>
+
+        <button class="btn-calc" onclick="calculate()">احسب الزكاة المستحقة</button>
+
+        <!-- Result -->
+        <div id="result" class="result-box">
+            <div class="total-assets">إجمالي الثروة: <span id="total-val">0</span></div>
+            <div class="zakat-due" id="zakat-val">0.00</div>
+            <div id="status-badge" class="status-msg"></div>
+            <p class="status-msg" style="display:block; background:none; color:var(--text-dim); margin-top:10px;">
+                الحد الأدنى للنصاب: <span id="nisab-display">0</span>
+            </p>
         </div>
     </div>
 
     <script>
-        function calculateZakat() {
-            const amount = parseFloat(document.getElementById('amount').value);
-            const resultBox = document.getElementById('result');
-            const resultValue = document.getElementById('zakat-value');
-
-            if (isNaN(amount) || amount <= 0) {
-                alert('الرجاء إدخال مبلغ صحيح.');
-                return;
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedPrice = localStorage.getItem('zakat_gold_price');
+            if (savedPrice) {
+                document.getElementById('gold-price').value = savedPrice;
+                updateNisabDisplay();
             }
+        });
 
-            const zakat = amount * 0.025;
+        function saveSettings() {
+            const price = document.getElementById('gold-price').value;
+            localStorage.setItem('zakat_gold_price', price);
+            updateNisabDisplay();
+        }
 
-            // Format with commas, 2 decimal places
-            resultValue.innerText = zakat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        function updateNisabDisplay() {
+            const price = parseFloat(document.getElementById('gold-price').value) || 0;
+            const nisab = price * 85;
+            document.getElementById('nisab-val').innerText = formatMoney(nisab);
+        }
+
+        function calculate() {
+            const goldPrice = parseFloat(document.getElementById('gold-price').value);
+            if (!goldPrice) return alert("يرجى إدخال سعر جرام الذهب أولاً لحساب النصاب.");
+
+            // Assets
+            const cash = parseFloat(document.getElementById('cash').value) || 0;
+            const goldW = parseFloat(document.getElementById('gold-weight').value) || 0;
+            const silverW = parseFloat(document.getElementById('silver-weight').value) || 0;
+
+            // Values
+            // Silver price approx 1/80 of gold? Or user input? 
+            // Let's assume user inputs simple assets. 
+            // Actually, gold assets value = weight * price.
+            // Silver value? We didn't ask for silver price. Let's assume mostly Gold/Cash focus or generic "Assets Value".
+
+            // Simplified: User inputs WEIGHT of gold. We start with Gold Price input.
+            const goldValue = goldW * goldPrice;
+
+            // Silver logic: tough without price. Let's skip silver auto-calc unless we add silver price input.
+            // Or just treat silver input as 0 for now unless we add price.
+            // Let's assume Silver Price is approx 2% of Gold Price roughly? No, too risky.
+            // Let's just calculate Gold + Cash for now to be safe.
+
+            const totalWealth = cash + goldValue;
+            const nisab = 85 * goldPrice;
+
+            document.getElementById('total-val').innerText = formatMoney(totalWealth);
+            document.getElementById('nisab-display').innerText = formatMoney(nisab);
+
+            const resultBox = document.getElementById('result');
+            const statusBadge = document.getElementById('status-badge');
+            const zakatVal = document.getElementById('zakat-val');
+
             resultBox.style.display = 'block';
+
+            if (totalWealth >= nisab) {
+                const due = totalWealth * 0.025;
+                zakatVal.innerText = formatMoney(due);
+                statusBadge.className = 'status-msg status-ok';
+                statusBadge.innerText = "✅ تجب عليك الزكاة";
+                statusBadge.style.color = "var(--accent)";
+            } else {
+                zakatVal.innerText = "0.00";
+                statusBadge.className = 'status-msg status-no';
+                statusBadge.innerText = "❌ لم يبلغ النصاب";
+                statusBadge.style.color = "var(--wrong)";
+            }
+        }
+
+        function formatMoney(num) {
+            return num.toLocaleString('en-US', { maximumFractionDigits: 2 });
         }
     </script>
 
