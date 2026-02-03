@@ -209,18 +209,26 @@
 
             try {
                 const response = await fetch(url);
+
+                if (!response.ok) {
+                    if (response.status === 429) {
+                        throw new Error("تجاوزت حد الطلبات (Rate Limit). يرجى الانتظار قليلاً.");
+                    }
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
+
                 const data = await response.json();
 
                 if (data.elements && data.elements.length > 0) {
                     showStatus(`تم العثور على ${data.elements.length} مسجد`);
                     displayMosques(data.elements);
                 } else {
-                    showStatus("لم يتم العثور على مساجد قريبة.");
+                    showStatus("لم يتم العثور على مساجد قريبة في نطاق 2 كم.");
                 }
 
             } catch (error) {
-                console.error(error);
-                showStatus("خطأ في جلب بيانات المساجد.");
+                console.error("Fetch Mosques Error:", error);
+                showStatus("عذراً: " + error.message);
             }
         }
 
