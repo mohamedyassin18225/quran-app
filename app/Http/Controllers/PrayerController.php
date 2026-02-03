@@ -228,4 +228,9 @@ class PrayerController extends Controller
     {
         return view('tracker');
     }
+
+    public function khatma()
+    {
+        return view('quran.khatma');
+    }
 }

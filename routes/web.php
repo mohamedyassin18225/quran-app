@@ -17,6 +17,7 @@ Route::get('/zakat', [App\Http\Controllers\PrayerController::class, 'zakat']);
 Route::get('/calendar', [App\Http\Controllers\PrayerController::class, 'calendar']);
 Route::get('/hadith', [App\Http\Controllers\PrayerController::class, 'hadith']);
 Route::get('/quiz', [App\Http\Controllers\PrayerController::class, 'quiz']);
+Route::get('/khatma', [App\Http\Controllers\PrayerController::class, 'khatma']);
 Route::get('/mosques', [App\Http\Controllers\PrayerController::class, 'mosques']);
 Route::get('/tracker', [App\Http\Controllers\PrayerController::class, 'tracker']);
 Route::get('/ramadan', [App\Http\Controllers\PrayerController::class, 'ramadan']);

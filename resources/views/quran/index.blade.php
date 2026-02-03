@@ -156,37 +156,19 @@
                 <span>بحث</span>
             </a>
             <div id="resume-container" style="margin-top:20px; width:100%; max-width:500px;">
-                <!-- Khatma Dashboard -->
+                <!-- Khatma Dashboard Link -->
                 <div class="khatma-card"
-                    style="background:var(--secondary); padding:20px; border-radius:16px; margin-bottom:20px; border:1px solid rgba(255,255,255,0.05);">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <h3 style="margin:0; color:var(--accent);">متابعة الختمة</h3>
-                        <div id="khatma-days-left" style="font-size:0.9rem; color:var(--text-dim);"></div>
-                    </div>
+                    style="background:var(--secondary); padding:20px; border-radius:16px; margin-bottom:20px; border:1px solid rgba(255,255,255,0.05); text-align:center;">
 
-                    <div class="progress-bar"
-                        style="background:rgba(0,0,0,0.3); height:10px; border-radius:10px; overflow:hidden; margin-bottom:10px;">
-                        <div id="progress-fill"
-                            style="background:var(--accent); width:0%; height:100%; transition:width 0.5s;"></div>
-                    </div>
+                    <h3 style="margin:0 0 10px 0; color:var(--accent);">🌙 ختمة القرآن</h3>
+                    <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:15px;">
+                        تابع ختمتك، وحدد أهداف يومية أو تاريخ للإنتهاء.
+                    </p>
 
-                    <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:15px;">
-                        <span id="progress-text">0% مكتمل</span>
-                        <span id="ayahs-left">6236 آية متبقية</span>
-                    </div>
-
-                    <div style="display:flex; gap:10px; justify-content:flex-end;">
-                        <a id="resume-btn" href="#"
-                            style="background:var(--accent); color:#0f172a; padding:8px 20px; border-radius: 20px; text-decoration:none; font-weight:bold; font-size:0.9rem; display:none;">
-                            تابع القراءة
-                        </a>
-                        <span id="start-msg" style="color:var(--text-dim); font-size:0.9rem; align-self:center;">ابدأ
-                            القراءة لتفعيل العداد</span>
-                        <button onclick="configureKhatma()"
-                            style="background:transparent; border:1px solid var(--text-dim); color:var(--text-light); padding:8px 15px; border-radius:20px; cursor:pointer; font-family:'Cairo';">
-                            ⚙️ إعداد الخطة
-                        </button>
-                    </div>
+                    <a href="/khatma"
+                        style="background:var(--accent); color:#0f172a; padding:10px 25px; border-radius: 25px; text-decoration:none; font-weight:bold; display:inline-block;">
+                        فتح متابع الختمة
+                    </a>
                 </div>
             </div>
         </div>
